@@ -28,7 +28,6 @@ insert into baseCost(BaseCostSizeID, BaseCostCrustID, BaseCostPrize, BaseCostCos
 (4,3,11.5,4.5),
 (4,4,12.5,6);
 
-
 insert into topping(ToppingName, ToppingPrice, ToppingCost, ToppingCurrentInventory) values
 ("Pepperoni", 1.25, 0.2, 100),
 ("Sausage", 1.25, 0.15, 100),
@@ -47,7 +46,6 @@ insert into topping(ToppingName, ToppingPrice, ToppingCost, ToppingCurrentInvent
 ("Feta Cheese", 2, 0.18, 75),
 ("Goat Cheese", 2, 0.2, 54),
 ("Bacon", 1.5, 0.25, 89);
-
 
 insert into baseTopping(BaseToppingToppingID, BaseToppingSizeID, BaseToppingUnit) values
 (1, 1, 2),
@@ -125,3 +123,14 @@ insert into discount(DiscountName, DiscountValue, DiscountIsPercent, DiscountOnO
 ("Lunch Special Large", 2.00, False, True),
 ("Specialty Pizza", 1.50, False, True),
 ("Gameday Special", 20, True, True);
+
+
+/*
+
+insert into toppingCurrent(ToppingCurrentBaseToppingID, ToppingCurrentCounter) values
+()
+insert into pizza(PizzaCrustID, PizzaSizeID, PizzaTopCurrentID, PizzaOrderID, PizzaDiscountID, PizzaState, PizzaTotalCost, PizzaTotalPrice)
+values(3, 1, 
+insert into customerOrder(
+
+*/

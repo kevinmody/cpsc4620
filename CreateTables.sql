@@ -62,7 +62,7 @@ create table discount (
 );
 
 create table customerOrder (
-	CustomerOrderID integer not null primary key, 
+	CustomerOrderID integer not null primary key auto_increment, 
 	CustomerOrderCustomerID int, 
     CustomerOrderDiscountID int not null,
     foreign key (CustomerOrderCustomerID) references customer(CustomerID),
