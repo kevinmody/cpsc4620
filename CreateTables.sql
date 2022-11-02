@@ -40,13 +40,6 @@ create table baseTopping (
     BaseToppingUnit double(3,2) not null default 0.00
 );
 
-create table toppingCurrent (
-	ToppingCurrentID Integer primary key,
-    ToppingCurrentBaseToppingID Integer,
-    foreign key (ToppingCurrentBaseToppingID) references baseTopping(BaseToppingID) on update cascade,
-	ToppingCurrentCounter Integer not null default 0
-);
-
 create table customer (
 	CustomerID Integer primary key,
     CustomerFname varchar(255) not null unique,
@@ -63,28 +56,23 @@ create table discount (
 
 create table customerOrder (
 	CustomerOrderID integer not null primary key auto_increment, 
-	CustomerOrderCustomerID int, 
-    CustomerOrderDiscountID int not null,
-    foreign key (CustomerOrderCustomerID) references customer(CustomerID),
+    CustomerOrderDiscountID int,
     foreign key (CustomerOrderDiscountID) references discount(DiscountID),
     CustomerOrderType varchar(255) not null check(CustomerOrderType in ("DineIn", "Pickup", "Delivery")),
     CustomerOrderTimeStamp timestamp not null,
-    CustomerOrderTotalcost double(8,2) not null,
-    CusomterOrderTotalprice double(8,2) not null
+    CustomerOrderTotalCost double(8,2) not null default 0.0,
+    CustomerOrderTotalPrice double(8,2) not null default 0.0
 );
-
 create table dineIn (
 	DineInCustomerOrderID integer not null primary key,
     foreign key (DineInCustomerOrderID) references customerOrder(CustomerOrderID),
-    DineInCustomerID integer not null,
-    foreign key (DineInCustomerID) references customer(customerID),
     DineInTableNumber integer not null
 );
 create table pickup (
 	PickupCustomerOrderID integer not null primary key,
     foreign key (PickupCustomerOrderID) references customerOrder(CustomerOrderID),
     PickupCustomerID integer not null,
-    foreign key (PickupCustomerID) references customer(customerID),
+    foreign key (PickupCustomerID) references customer(CustomerID),
     PickupDate date not null,
     PickupTime time not null
 );
@@ -92,7 +80,7 @@ create table delivery (
 	DeliveryCustomerOrderID integer not null primary key,
     foreign key (DeliveryCustomerOrderID) references customerOrder(CustomerOrderID),
     DeliveryCustomerID integer not null,
-    foreign key (DeliveryCustomerID) references customer(customerID),
+    foreign key (DeliveryCustomerID) references customer(CustomerID),
     DeliveryStreet varchar(255) not null,
     DeliveryCity varchar(255) not null,
     DeliveryState varchar(2) not null,
@@ -103,17 +91,24 @@ create table pizza(
 	PizzaID int not null auto_increment primary key,
 	PizzaCrustID int not null,
     PizzaSizeID int not null,
-    PizzaTopCurrrentID int not null, 
     PizzaOrderID int not null,
     PizzaDiscountID int not null,
     foreign key (PizzaCrustID) references baseCost(BaseCostCrustID),
     foreign key (PizzaSizeID) references baseCost(BaseCostSizeId),
-    foreign key (PizzaTopCurrrentID) references toppingCurrent(ToppingCurrentID),
     foreign key (PizzaOrderID) references customerOrder(CustomerOrderID),
     foreign key (PizzaDiscountID) references discount(DiscountID),
     
     PizzaState varchar(255) not null unique,
     PizzaTotalCost double(8,2) not null,
     PizzaTotalPrice double(8,2) not null
+);
+
+create table toppingCurrent (
+	ToppingCurrentID Integer primary key,
+    ToppingCurrentBaseToppingID Integer,
+    foreign key (ToppingCurrentBaseToppingID) references baseTopping(BaseToppingID) on update cascade,
+    ToppingCurrentPizzaID int not null,
+	foreign key (ToppingCurrentPizzaID) references pizza(PizzaID) on update cascade,
+	ToppingCurrentCounter Integer not null default 0
 );
 

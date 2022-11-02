@@ -125,12 +125,14 @@ insert into discount(DiscountName, DiscountValue, DiscountIsPercent, DiscountOnO
 ("Gameday Special", 20, True, True);
 
 
+-- 1st Order
+insert into customerOrder(CustomerOrderType, CustomerOrderTimeStamp, CustomerOrderTotalprice, CustomerOrderTotalcost)
+values ("DineIn", "2022-03-05 12:03:00", 0 ,0);
+-- Work in progress
 /*
-
 insert into toppingCurrent(ToppingCurrentBaseToppingID, ToppingCurrentCounter) values
 ()
-insert into pizza(PizzaCrustID, PizzaSizeID, PizzaTopCurrentID, PizzaOrderID, PizzaDiscountID, PizzaState, PizzaTotalCost, PizzaTotalPrice)
-values(3, 1, 
-insert into customerOrder(
+insert into pizza(PizzaCrustID, PizzaSizeID, PizzaOrderID, PizzaDiscountID, PizzaState, PizzaTotalCost, PizzaTotalPrice)
+values(3, 1)
 
 */
