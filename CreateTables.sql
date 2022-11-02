@@ -37,7 +37,7 @@ create table baseTopping (
     BaseToppingSizeID Integer,
     foreign key (BaseToppingSizeID) references size(SizeID) on update cascade,
     primary key (BaseToppingToppingID, BaseToppingSizeID),
-    BaseToppingUnit decimal(3,3) not null default 0.001
+    BaseToppingUnit double(3,2) not null default 0.00
 );
 
 create table toppingCurrent (
@@ -54,8 +54,9 @@ create table customer (
 );
 
 create table discount (
-	DiscountID int primary key,
-    DiscountValue int not null,
+	DiscountID int primary key auto_increment,
+    DiscountName varchar(255) unique,
+    DiscountValue decimal(6,2) not null,
     DiscountIsPercent boolean not null,
     DiscountOnOrder boolean not null
 );
@@ -115,3 +116,4 @@ create table pizza(
     PizzaTotalCost double(8,2) not null,
     PizzaTotalPrice double(8,2) not null
 );
+
