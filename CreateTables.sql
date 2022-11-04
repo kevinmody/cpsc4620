@@ -1,3 +1,6 @@
+-- Sahil Patel and Kevin Mody
+
+use Pizzeria;
 create table size (
 	SizeID Integer primary key auto_increment,
     SizeType varchar(255) not null unique,
@@ -43,7 +46,8 @@ create table baseTopping (
 create table customer (
 	CustomerID Integer primary key,
     CustomerFname varchar(255) not null unique,
-    CustomerLname varchar(255) not null unique
+    CustomerLname varchar(255) not null unique, 
+    CustomerPhone varchar(10)
 );
 
 create table discount (
@@ -73,8 +77,7 @@ create table pickup (
     foreign key (PickupCustomerOrderID) references customerOrder(CustomerOrderID),
     PickupCustomerID integer not null,
     foreign key (PickupCustomerID) references customer(CustomerID),
-    PickupDate date not null,
-    PickupTime time not null
+    PickupTimestamp timestamp not null
 );
 create table delivery (
 	DeliveryCustomerOrderID integer not null primary key,
@@ -92,19 +95,19 @@ create table pizza(
 	PizzaCrustID int not null,
     PizzaSizeID int not null,
     PizzaOrderID int not null,
-    PizzaDiscountID int not null,
+    PizzaDiscountID int,
     foreign key (PizzaCrustID) references baseCost(BaseCostCrustID),
     foreign key (PizzaSizeID) references baseCost(BaseCostSizeId),
     foreign key (PizzaOrderID) references customerOrder(CustomerOrderID),
     foreign key (PizzaDiscountID) references discount(DiscountID),
     
-    PizzaState varchar(255) not null unique,
+    PizzaState varchar(255) not null,
     PizzaTotalCost double(8,2) not null,
     PizzaTotalPrice double(8,2) not null
 );
 
 create table toppingCurrent (
-	ToppingCurrentID Integer primary key,
+	ToppingCurrentID Integer primary key auto_increment,
     ToppingCurrentBaseToppingID Integer,
     foreign key (ToppingCurrentBaseToppingID) references baseTopping(BaseToppingID) on update cascade,
     ToppingCurrentPizzaID int not null,

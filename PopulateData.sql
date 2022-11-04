@@ -1,3 +1,6 @@
+-- Sahil Patel and Kevin Mody
+
+use Pizzeria;
 insert into size(SizeType) values
 ("Small"),
 ("Medium"),
@@ -126,13 +129,549 @@ insert into discount(DiscountName, DiscountValue, DiscountIsPercent, DiscountOnO
 
 
 -- 1st Order
-insert into customerOrder(CustomerOrderType, CustomerOrderTimeStamp, CustomerOrderTotalprice, CustomerOrderTotalcost)
-values ("DineIn", "2022-03-05 12:03:00", 0 ,0);
--- Work in progress
+insert into customerOrder(CustomerOrderID, CustomerOrderType, CustomerOrderTimeStamp, CustomerOrderTotalprice, CustomerOrderTotalcost)
+values (1, "DineIn", "2022-03-05 12:03:00", 0 ,0);
+insert into dineIn(DineInCustomerOrderID, DineInTableNumber)
+values (1, 14);
+insert into pizza(PizzaID, PizzaCrustID, PizzaSizeID, PizzaOrderID, PizzaDiscountID, PizzaState, PizzaTotalCost, PizzaTotalPrice)
+values(1, 1, 3, 1, 3, "Complete", 0, 0);
+insert into toppingCurrent(ToppingCurrentPizzaID, ToppingCurrentBaseToppingID, ToppingCurrentCounter)
+values (1, 51, 2) , (1, 3, 1), (1, 7, 1);
+
+update pizza
+set PizzaTotalPrice =
+(cast((select sum(ToppingPrice * ToppingCurrentCounter) from topping as t
+inner join
+	(select * from baseTopping
+	where BaseToppingID in 
+		(select ToppingCurrentBaseToppingID from toppingCurrent
+		where ToppingCurrentPizzaID = 1)) as bt on bt.BaseToppingToppingID = t.ToppingID
+inner join toppingCurrent as tc on tc.ToppingCurrentBaseToppingID = BaseToppingID) as double) + 
+cast((select BaseCostPrize from baseCost where BaseCostSizeID = 3 AND BaseCostCrustID = 1) as double)),
+
+PizzaTotalCost = 
+cast((select sum(ToppingCost * BaseToppingUnit * ToppingCurrentCounter) from topping as t
+inner join
+	(select * from baseTopping
+	where BaseToppingID in 
+		(select ToppingCurrentBaseToppingID from toppingCurrent
+		where ToppingCurrentPizzaID = 1)) as bt on bt.BaseToppingToppingID = t.ToppingID
+inner join toppingCurrent as tc on tc.ToppingCurrentBaseToppingID = BaseToppingID) as double) + 
+cast((select BaseCostCost from baseCost where BaseCostSizeID = 3 AND BaseCostCrustID = 1) as double)
+where PizzaID = 1;
+
+update customerOrder
+set CustomerOrderTotalprice = cast((select sum(PizzaTotalPrice) from pizza where PizzaOrderID = 1) as double),
+CustomerOrderTotalcost = cast((select sum(PizzaTotalCost) from pizza where PizzaOrderID = 1) as double)
+where CustomerOrderID = 1;
+
+
+
+-- Order 2 
+insert into customerOrder(CustomerOrderID, CustomerOrderType, CustomerOrderTimeStamp, CustomerOrderTotalprice, CustomerOrderTotalcost)
+values (2, "DineIn", "2022-04-03 12:05:00", 0, 0);
+insert into dineIn(DineInCustomerOrderID, DineInTableNumber)
+values (2, 4);
+insert into pizza(PizzaID, PizzaCrustID, PizzaSizeID, PizzaOrderID, PizzaDiscountID, PizzaState, PizzaTotalCost, PizzaTotalPrice)
+values
+(2, 3, 2, 2, 2, "Complete", 0, 0),
+(3, 2, 1, 2, 4, "Complete", 0, 0);
+insert into toppingCurrent(ToppingCurrentPizzaID, ToppingCurrentBaseToppingID, ToppingCurrentCounter)
+values
+(2, 58, 1), (2, 34, 1), (2, 26, 1), (2, 30, 1), (2, 46, 1),
+(3, 49, 1), (3, 13, 1), (3, 4, 1);
+
+update pizza
+set PizzaTotalPrice =
+(cast((select sum(ToppingPrice * ToppingCurrentCounter) from topping as t
+inner join
+	(select * from baseTopping
+	where BaseToppingID in 
+		(select ToppingCurrentBaseToppingID from toppingCurrent
+		where ToppingCurrentPizzaID = 2)) as bt on bt.BaseToppingToppingID = t.ToppingID
+inner join toppingCurrent as tc on tc.ToppingCurrentBaseToppingID = BaseToppingID) as double) + 
+cast((select BaseCostPrize from baseCost where BaseCostCrustID = 3 AND BaseCostSizeID = 2) as double)),
+
+PizzaTotalCost = 
+cast((select sum(ToppingCost * BaseToppingUnit * ToppingCurrentCounter) from topping as t
+inner join
+	(select * from baseTopping
+	where BaseToppingID in 
+		(select ToppingCurrentBaseToppingID from toppingCurrent
+		where ToppingCurrentPizzaID = 2)) as bt on bt.BaseToppingToppingID = t.ToppingID
+inner join toppingCurrent as tc on tc.ToppingCurrentBaseToppingID = BaseToppingID) as double) + 
+cast((select BaseCostCost from baseCost where BaseCostCrustID = 3 AND BaseCostSizeID = 2) as double)
+where PizzaID = 2;
+
+update pizza
+set PizzaTotalPrice =
+(cast((select sum(ToppingPrice * ToppingCurrentCounter) from topping as t
+inner join
+	(select * from baseTopping
+	where BaseToppingID in 
+		(select ToppingCurrentBaseToppingID from toppingCurrent
+		where ToppingCurrentPizzaID = 3)) as bt on bt.BaseToppingToppingID = t.ToppingID
+inner join toppingCurrent as tc on tc.ToppingCurrentBaseToppingID = BaseToppingID) as double) + 
+cast((select BaseCostPrize from baseCost where BaseCostCrustID = 2 AND BaseCostSizeID = 1) as double)),
+
+PizzaTotalCost = 
+cast((select sum(ToppingCost * BaseToppingUnit * ToppingCurrentCounter) from topping as t
+inner join
+	(select * from baseTopping
+	where BaseToppingID in 
+		(select ToppingCurrentBaseToppingID from toppingCurrent
+		where ToppingCurrentPizzaID = 3)) as bt on bt.BaseToppingToppingID = t.ToppingID
+inner join toppingCurrent as tc on tc.ToppingCurrentBaseToppingID = BaseToppingID) as double) + 
+cast((select BaseCostCost from baseCost where BaseCostCrustID = 2 AND BaseCostSizeID = 1) as double)
+where PizzaID = 3;
+
+update customerOrder
+set CustomerOrderTotalprice = cast((select sum(PizzaTotalPrice) from pizza where PizzaOrderID = 2) as double),
+CustomerOrderTotalcost = cast((select sum(PizzaTotalCost) from pizza where PizzaOrderID = 2) as double)
+where CustomerOrderID = 2;
+
+
+
+-- Order 3
+
+insert into customerOrder(CustomerOrderID, CustomerOrderType, CustomerOrderTimeStamp, CustomerOrderTotalprice, CustomerOrderTotalcost)
+values(3, "PickUp", "2022-03-03 09:30:00", 0, 0);
+insert into customer(CustomerID, CustomerFname, CustomerLname, CustomerPhone)
+values (1, "Andrew", "Wilkes-Krier", "8642545861");
+insert into pickup(PickupCustomerOrderID, PickupCustomerID, PickupTimestamp)
+values(3, 1, "2022-03-03 09:50:00");
+
+insert into pizza(PizzaID, PizzaCrustID, PizzaSizeID, PizzaOrderID, PizzaState, PizzaTotalCost, PizzaTotalPrice) values
+(4, 2, 3, 3, "Complete", 0, 0),
+(5, 2, 3, 3, "Complete", 0, 0),
+(6, 2, 3, 3, "Complete", 0, 0),
+(7, 2, 3, 3, "Complete", 0, 0),
+(8, 2, 3, 3, "Complete", 0, 0),
+(9, 2, 3, 3, "Complete", 0, 0);
+
+insert into toppingCurrent(ToppingCurrentPizzaID, ToppingCurrentBaseToppingID, ToppingCurrentCounter) values
+(4, 51, 1), (4, 3, 1),
+(5, 51, 1), (5, 3, 1),
+(6, 51, 1), (6, 3, 1),
+(7, 51, 1), (7, 3, 1),
+(8, 51, 1), (8, 3, 1),
+(9, 51, 1), (9, 3, 1);
+
+update pizza
+set PizzaTotalPrice =
+(cast((select sum(ToppingPrice * ToppingCurrentCounter) from topping as t
+inner join
+	(select * from baseTopping
+	where BaseToppingID in 
+		(select ToppingCurrentBaseToppingID from toppingCurrent
+		where ToppingCurrentPizzaID = 4)) as bt on bt.BaseToppingToppingID = t.ToppingID
+inner join toppingCurrent as tc on tc.ToppingCurrentBaseToppingID = BaseToppingID) as double) + 
+cast((select BaseCostPrize from baseCost where BaseCostCrustID = 2 AND BaseCostSizeID = 3) as double)),
+
+PizzaTotalCost = 
+cast((select sum(ToppingCost * BaseToppingUnit * ToppingCurrentCounter) from topping as t
+inner join
+	(select * from baseTopping
+	where BaseToppingID in 
+		(select ToppingCurrentBaseToppingID from toppingCurrent
+		where ToppingCurrentPizzaID = 4)) as bt on bt.BaseToppingToppingID = t.ToppingID
+inner join toppingCurrent as tc on tc.ToppingCurrentBaseToppingID = BaseToppingID) as double) + 
+cast((select BaseCostCost from baseCost where BaseCostCrustID = 2 AND BaseCostSizeID = 3) as double)
+where PizzaID = 4;
+
+update pizza
+set PizzaTotalPrice =
+(cast((select sum(ToppingPrice * ToppingCurrentCounter) from topping as t
+inner join
+	(select * from baseTopping
+	where BaseToppingID in 
+		(select ToppingCurrentBaseToppingID from toppingCurrent
+		where ToppingCurrentPizzaID = 5)) as bt on bt.BaseToppingToppingID = t.ToppingID
+inner join toppingCurrent as tc on tc.ToppingCurrentBaseToppingID = BaseToppingID) as double) + 
+cast((select BaseCostPrize from baseCost where BaseCostCrustID = 2 AND BaseCostSizeID = 3) as double)),
+
+PizzaTotalCost = 
+cast((select sum(ToppingCost * BaseToppingUnit * ToppingCurrentCounter) from topping as t
+inner join
+	(select * from baseTopping
+	where BaseToppingID in 
+		(select ToppingCurrentBaseToppingID from toppingCurrent
+		where ToppingCurrentPizzaID = 5)) as bt on bt.BaseToppingToppingID = t.ToppingID
+inner join toppingCurrent as tc on tc.ToppingCurrentBaseToppingID = BaseToppingID) as double) + 
+cast((select BaseCostCost from baseCost where BaseCostCrustID = 2 AND BaseCostSizeID = 3) as double)
+where PizzaID = 5;
+
+update pizza
+set PizzaTotalPrice =
+(cast((select sum(ToppingPrice * ToppingCurrentCounter) from topping as t
+inner join
+	(select * from baseTopping
+	where BaseToppingID in 
+		(select ToppingCurrentBaseToppingID from toppingCurrent
+		where ToppingCurrentPizzaID = 6)) as bt on bt.BaseToppingToppingID = t.ToppingID
+inner join toppingCurrent as tc on tc.ToppingCurrentBaseToppingID = BaseToppingID) as double) + 
+cast((select BaseCostPrize from baseCost where BaseCostCrustID = 2 AND BaseCostSizeID = 3) as double)),
+
+PizzaTotalCost = 
+cast((select sum(ToppingCost * BaseToppingUnit * ToppingCurrentCounter) from topping as t
+inner join
+	(select * from baseTopping
+	where BaseToppingID in 
+		(select ToppingCurrentBaseToppingID from toppingCurrent
+		where ToppingCurrentPizzaID = 6)) as bt on bt.BaseToppingToppingID = t.ToppingID
+inner join toppingCurrent as tc on tc.ToppingCurrentBaseToppingID = BaseToppingID) as double) + 
+cast((select BaseCostCost from baseCost where BaseCostCrustID = 2 AND BaseCostSizeID = 3) as double)
+where PizzaID = 6;
+
+update pizza
+set PizzaTotalPrice =
+(cast((select sum(ToppingPrice * ToppingCurrentCounter) from topping as t
+inner join
+	(select * from baseTopping
+	where BaseToppingID in 
+		(select ToppingCurrentBaseToppingID from toppingCurrent
+		where ToppingCurrentPizzaID = 7)) as bt on bt.BaseToppingToppingID = t.ToppingID
+inner join toppingCurrent as tc on tc.ToppingCurrentBaseToppingID = BaseToppingID) as double) + 
+cast((select BaseCostPrize from baseCost where BaseCostCrustID = 2 AND BaseCostSizeID = 3) as double)),
+
+PizzaTotalCost = 
+cast((select sum(ToppingCost * BaseToppingUnit * ToppingCurrentCounter) from topping as t
+inner join
+	(select * from baseTopping
+	where BaseToppingID in 
+		(select ToppingCurrentBaseToppingID from toppingCurrent
+		where ToppingCurrentPizzaID = 7)) as bt on bt.BaseToppingToppingID = t.ToppingID
+inner join toppingCurrent as tc on tc.ToppingCurrentBaseToppingID = BaseToppingID) as double) + 
+cast((select BaseCostCost from baseCost where BaseCostCrustID = 2 AND BaseCostSizeID = 3) as double)
+where PizzaID = 7;
+
+update pizza
+set PizzaTotalPrice =
+(cast((select sum(ToppingPrice * ToppingCurrentCounter) from topping as t
+inner join
+	(select * from baseTopping
+	where BaseToppingID in 
+		(select ToppingCurrentBaseToppingID from toppingCurrent
+		where ToppingCurrentPizzaID = 8)) as bt on bt.BaseToppingToppingID = t.ToppingID
+inner join toppingCurrent as tc on tc.ToppingCurrentBaseToppingID = BaseToppingID) as double) + 
+cast((select BaseCostPrize from baseCost where BaseCostCrustID = 2 AND BaseCostSizeID = 3) as double)),
+
+PizzaTotalCost = 
+cast((select sum(ToppingCost * BaseToppingUnit * ToppingCurrentCounter) from topping as t
+inner join
+	(select * from baseTopping
+	where BaseToppingID in 
+		(select ToppingCurrentBaseToppingID from toppingCurrent
+		where ToppingCurrentPizzaID = 8)) as bt on bt.BaseToppingToppingID = t.ToppingID
+inner join toppingCurrent as tc on tc.ToppingCurrentBaseToppingID = BaseToppingID) as double) + 
+cast((select BaseCostCost from baseCost where BaseCostCrustID = 2 AND BaseCostSizeID = 3) as double)
+where PizzaID = 8;
+
+update pizza
+set PizzaTotalPrice =
+(cast((select sum(ToppingPrice * ToppingCurrentCounter) from topping as t
+inner join
+	(select * from baseTopping
+	where BaseToppingID in 
+		(select ToppingCurrentBaseToppingID from toppingCurrent
+		where ToppingCurrentPizzaID = 9)) as bt on bt.BaseToppingToppingID = t.ToppingID
+inner join toppingCurrent as tc on tc.ToppingCurrentBaseToppingID = BaseToppingID) as double) + 
+cast((select BaseCostPrize from baseCost where BaseCostCrustID = 2 AND BaseCostSizeID = 3) as double)),
+
+PizzaTotalCost = 
+cast((select sum(ToppingCost * BaseToppingUnit * ToppingCurrentCounter) from topping as t
+inner join
+	(select * from baseTopping
+	where BaseToppingID in 
+		(select ToppingCurrentBaseToppingID from toppingCurrent
+		where ToppingCurrentPizzaID = 9)) as bt on bt.BaseToppingToppingID = t.ToppingID
+inner join toppingCurrent as tc on tc.ToppingCurrentBaseToppingID = BaseToppingID) as double) + 
+cast((select BaseCostCost from baseCost where BaseCostCrustID = 2 AND BaseCostSizeID = 3) as double)
+where PizzaID = 9;
+
+update customerOrder
+set CustomerOrderTotalprice = cast((select sum(PizzaTotalPrice) from pizza where PizzaOrderID = 3) as double),
+CustomerOrderTotalcost = cast((select sum(PizzaTotalCost) from pizza where PizzaOrderID = 3) as double)
+where CustomerOrderID = 3;
+
+
+-- Order 4
+
+insert into customerOrder(CustomerOrderID, CustomerOrderType, CustomerOrderTimeStamp, CustomerOrderTotalprice, CustomerOrderTotalcost)
+values(4,"Delivery","2022-04-20 19:11:00", 0, 0);
+insert into delivery(DeliveryCustomerOrderID, DeliveryCustomerID, DeliveryStreet, DeliveryCity, DeliveryState, DeliveryZip)
+values(4, 1, "115 Party Blvd", "Anderson", "SC", "29621");
+
+insert into pizza(PizzaID, PizzaCrustID, PizzaSizeID, PizzaOrderID, PizzaState, PizzaTotalCost, PizzaTotalPrice, PizzaDiscountID) values
+(10, 2, 4, 4, "Complete", 0, 0, null),
+(11, 2, 4, 4, "Complete", 0, 0, 4),
+(12, 2, 4, 4, "Complete", 0, 0, 4);
+
+insert into toppingCurrent(ToppingCurrentPizzaID, ToppingCurrentBaseToppingID, ToppingCurrentCounter) values
+(10, 4, 1), (10,8,1), (10, 56,1),
+(11, 12, 2),(11, 40, 2), (11, 56,1),
+(12, 44, 1),(12, 68, 1), (12, 56,1);
+
+update pizza
+set PizzaTotalPrice =
+(cast((select sum(ToppingPrice * ToppingCurrentCounter) from topping as t
+inner join
+	(select * from baseTopping
+	where BaseToppingID in 
+		(select ToppingCurrentBaseToppingID from toppingCurrent
+		where ToppingCurrentPizzaID = 10)) as bt on bt.BaseToppingToppingID = t.ToppingID
+inner join toppingCurrent as tc on tc.ToppingCurrentBaseToppingID = BaseToppingID) as double) + 
+cast((select BaseCostPrize from baseCost where BaseCostCrustID = 2 AND BaseCostSizeID = 4) as double)),
+
+PizzaTotalCost = 
+cast((select sum(ToppingCost * BaseToppingUnit * ToppingCurrentCounter) from topping as t
+inner join
+	(select * from baseTopping
+	where BaseToppingID in 
+		(select ToppingCurrentBaseToppingID from toppingCurrent
+		where ToppingCurrentPizzaID = 10)) as bt on bt.BaseToppingToppingID = t.ToppingID
+inner join toppingCurrent as tc on tc.ToppingCurrentBaseToppingID = BaseToppingID) as double) + 
+cast((select BaseCostCost from baseCost where BaseCostCrustID = 2 AND BaseCostSizeID = 4) as double)
+where PizzaID = 10;
+
+update pizza
+set PizzaTotalPrice =
+(cast((select sum(ToppingPrice * ToppingCurrentCounter) from topping as t
+inner join
+	(select * from baseTopping
+	where BaseToppingID in 
+		(select ToppingCurrentBaseToppingID from toppingCurrent
+		where ToppingCurrentPizzaID = 11)) as bt on bt.BaseToppingToppingID = t.ToppingID
+inner join toppingCurrent as tc on tc.ToppingCurrentBaseToppingID = BaseToppingID) as double) + 
+cast((select BaseCostPrize from baseCost where BaseCostCrustID = 2 AND BaseCostSizeID = 4) as double)),
+
+PizzaTotalCost = 
+cast((select sum(ToppingCost * BaseToppingUnit * ToppingCurrentCounter) from topping as t
+inner join
+	(select * from baseTopping
+	where BaseToppingID in 
+		(select ToppingCurrentBaseToppingID from toppingCurrent
+		where ToppingCurrentPizzaID = 11)) as bt on bt.BaseToppingToppingID = t.ToppingID
+inner join toppingCurrent as tc on tc.ToppingCurrentBaseToppingID = BaseToppingID) as double) + 
+cast((select BaseCostCost from baseCost where BaseCostCrustID = 2 AND BaseCostSizeID = 4) as double)
+where PizzaID = 11;
+
+update pizza
+set PizzaTotalPrice =
+(cast((select sum(ToppingPrice * ToppingCurrentCounter) from topping as t
+inner join
+	(select * from baseTopping
+	where BaseToppingID in 
+		(select ToppingCurrentBaseToppingID from toppingCurrent
+		where ToppingCurrentPizzaID = 12)) as bt on bt.BaseToppingToppingID = t.ToppingID
+inner join toppingCurrent as tc on tc.ToppingCurrentBaseToppingID = BaseToppingID) as double) + 
+cast((select BaseCostPrize from baseCost where BaseCostCrustID = 2 AND BaseCostSizeID = 4) as double)),
+
+PizzaTotalCost = 
+cast((select sum(ToppingCost * BaseToppingUnit * ToppingCurrentCounter) from topping as t
+inner join
+	(select * from baseTopping
+	where BaseToppingID in 
+		(select ToppingCurrentBaseToppingID from toppingCurrent
+		where ToppingCurrentPizzaID = 12)) as bt on bt.BaseToppingToppingID = t.ToppingID
+inner join toppingCurrent as tc on tc.ToppingCurrentBaseToppingID = BaseToppingID) as double) + 
+cast((select BaseCostCost from baseCost where BaseCostCrustID = 2 AND BaseCostSizeID = 4) as double)
+where PizzaID = 12;
+
+update customerOrder
+set CustomerOrderTotalprice = cast((select sum(PizzaTotalPrice) from pizza where PizzaOrderID = 4) as double),
+CustomerOrderTotalcost = cast((select sum(PizzaTotalCost) from pizza where PizzaOrderID = 4) as double)
+where CustomerOrderID = 4;
+
+
+-- Order 5
+
+insert into customerOrder(CustomerOrderID, CustomerOrderType, CustomerOrderTimeStamp, CustomerOrderTotalprice, CustomerOrderTotalcost)
+values(5, "PickUp", "2022-03-02 17:30:00", 0, 0);
+insert into customer(CustomerID, CustomerFname, CustomerLname, CustomerPhone)
+values (2, "Matt", "Engers", "8644749953");
+insert into pickup(PickupCustomerOrderID, PickupCustomerID, PickupTimestamp)
+values(5, 2, "2022-03-02 17:50:00");
+
+insert into pizza(PizzaID, PizzaCrustID, PizzaSizeID, PizzaOrderID, PizzaDiscountID, PizzaState, PizzaTotalCost, PizzaTotalPrice)
+values(13, 4, 4, 5, 4, "Complete", 0, 0);
+
+insert into toppingCurrent(ToppingCurrentPizzaID, ToppingCurrentBaseToppingID, ToppingCurrentCounter)
+values (13,64,1), (13, 20, 1), (13, 24, 1), (13, 28, 1), (13, 32, 1), (13, 36, 1);
+
+update pizza
+set PizzaTotalPrice =
+(cast((select sum(ToppingPrice * ToppingCurrentCounter) from topping as t
+inner join
+	(select * from baseTopping
+	where BaseToppingID in 
+		(select ToppingCurrentBaseToppingID from toppingCurrent
+		where ToppingCurrentPizzaID = 13)) as bt on bt.BaseToppingToppingID = t.ToppingID
+inner join toppingCurrent as tc on tc.ToppingCurrentBaseToppingID = BaseToppingID) as double) + 
+cast((select BaseCostPrize from baseCost where BaseCostCrustID = 4 AND BaseCostSizeID = 4) as double)),
+
+PizzaTotalCost = 
+cast((select sum(ToppingCost * BaseToppingUnit * ToppingCurrentCounter) from topping as t
+inner join
+	(select * from baseTopping
+	where BaseToppingID in 
+		(select ToppingCurrentBaseToppingID from toppingCurrent
+		where ToppingCurrentPizzaID = 13)) as bt on bt.BaseToppingToppingID = t.ToppingID
+inner join toppingCurrent as tc on tc.ToppingCurrentBaseToppingID = BaseToppingID) as double) + 
+cast((select BaseCostCost from baseCost where BaseCostCrustID = 4 AND BaseCostSizeID = 4) as double)
+where PizzaID = 13;
+
+update customerOrder
+set CustomerOrderTotalprice = cast((select sum(PizzaTotalPrice) from pizza where PizzaOrderID = 5) as double),
+CustomerOrderTotalcost = cast((select sum(PizzaTotalCost) from pizza where PizzaOrderID = 5) as double)
+where CustomerOrderID = 5;
+
+
+-- Order 6
+
+insert into customerOrder(CustomerOrderID, CustomerOrderType, CustomerOrderTimeStamp, CustomerOrderTotalprice, CustomerOrderTotalcost)
+values(6, "Delivery", "2022-03-02 06:17:00", 0, 0);
+insert into customer(CustomerID, CustomerFname, CustomerLname, CustomerPhone)
+values (3, "Frank", "Turner", "8642328944");
+insert into delivery(DeliveryCustomerOrderID, DeliveryCustomerID, DeliveryStreet, DeliveryCity, DeliveryState, DeliveryZip)
+values(6, 3, "6745 Wessex St", "Anderson", "SC", "29621");
+
+
+insert into pizza(PizzaID, PizzaCrustID, PizzaSizeID, PizzaOrderID, PizzaState, PizzaTotalCost, PizzaTotalPrice)
+values(14, 1, 3, 6, "Complete", 0, 0);
+
+insert into toppingCurrent(ToppingCurrentPizzaID, ToppingCurrentBaseToppingID, ToppingCurrentCounter)
+values(14, 15, 1),(14, 19, 1), (14,23,1), (14,31,1), (14,55,2);
+
+update pizza
+set PizzaTotalPrice =
+(cast((select sum(ToppingPrice * ToppingCurrentCounter) from topping as t
+inner join
+	(select * from baseTopping
+	where BaseToppingID in 
+		(select ToppingCurrentBaseToppingID from toppingCurrent
+		where ToppingCurrentPizzaID = 14)) as bt on bt.BaseToppingToppingID = t.ToppingID
+inner join toppingCurrent as tc on tc.ToppingCurrentBaseToppingID = BaseToppingID) as double) + 
+cast((select BaseCostPrize from baseCost where BaseCostCrustID = 1 AND BaseCostSizeID = 3) as double)),
+
+PizzaTotalCost = 
+cast((select sum(ToppingCost * BaseToppingUnit * ToppingCurrentCounter) from topping as t
+inner join
+	(select * from baseTopping
+	where BaseToppingID in 
+		(select ToppingCurrentBaseToppingID from toppingCurrent
+		where ToppingCurrentPizzaID = 14)) as bt on bt.BaseToppingToppingID = t.ToppingID
+inner join toppingCurrent as tc on tc.ToppingCurrentBaseToppingID = BaseToppingID) as double) + 
+cast((select BaseCostCost from baseCost where BaseCostCrustID = 1 AND BaseCostSizeID = 3) as double)
+where PizzaID = 14;
+
+update customerOrder
+set CustomerOrderTotalprice = cast((select sum(PizzaTotalPrice) from pizza where PizzaOrderID = 6) as double),
+CustomerOrderTotalcost = cast((select sum(PizzaTotalCost) from pizza where PizzaOrderID = 6) as double)
+where CustomerOrderID = 6;
+
+
+-- Order 7
+
+insert into customerOrder(CustomerOrderID, CustomerOrderType, CustomerOrderTimeStamp, CustomerOrderTotalprice, CustomerOrderTotalcost)
+values(7,"Delivery","2022-04-13 08:32:00", 0, 0);
+insert into customer(CustomerID, CustomerFname, CustomerLname, CustomerPhone)
+values (4, "Milo", "Auckerman", "8648785679");
+insert into delivery(DeliveryCustomerOrderID, DeliveryCustomerID, DeliveryStreet, DeliveryCity, DeliveryState, DeliveryZip)
+values(7, 4, "879 Suburban Home", "Anderson", "SC", "29621");
+
+insert into pizza(PizzaID, PizzaCrustID, PizzaSizeID, PizzaOrderID, PizzaState, PizzaTotalCost, PizzaTotalPrice) values
+(15, 1, 3, 7, "Complete", 0, 0),
+(16, 1, 3, 7, "Complete", 0, 0);
+
+insert into toppingCurrent(ToppingCurrentPizzaID, ToppingCurrentBaseToppingID, ToppingCurrentCounter) values
+(15, 55, 2),
+(16, 51, 1), (16, 3, 2);
+
+
+update pizza
+set PizzaTotalPrice =
+(cast((select sum(ToppingPrice * ToppingCurrentCounter) from topping as t
+inner join
+	(select * from baseTopping
+	where BaseToppingID in 
+		(select ToppingCurrentBaseToppingID from toppingCurrent
+		where ToppingCurrentPizzaID = 15)) as bt on bt.BaseToppingToppingID = t.ToppingID
+inner join toppingCurrent as tc on tc.ToppingCurrentBaseToppingID = BaseToppingID) as double) + 
+cast((select BaseCostPrize from baseCost where BaseCostCrustID = 1 AND BaseCostSizeID = 3) as double)),
+
+PizzaTotalCost = 
+cast((select sum(ToppingCost * BaseToppingUnit * ToppingCurrentCounter) from topping as t
+inner join
+	(select * from baseTopping
+	where BaseToppingID in 
+		(select ToppingCurrentBaseToppingID from toppingCurrent
+		where ToppingCurrentPizzaID = 15)) as bt on bt.BaseToppingToppingID = t.ToppingID
+inner join toppingCurrent as tc on tc.ToppingCurrentBaseToppingID = BaseToppingID) as double) + 
+cast((select BaseCostCost from baseCost where BaseCostCrustID = 1 AND BaseCostSizeID = 3) as double)
+where PizzaID = 15;
+
+update pizza
+set PizzaTotalPrice =
+(cast((select sum(ToppingPrice * ToppingCurrentCounter) from topping as t
+inner join
+	(select * from baseTopping
+	where BaseToppingID in 
+		(select ToppingCurrentBaseToppingID from toppingCurrent
+		where ToppingCurrentPizzaID = 16)) as bt on bt.BaseToppingToppingID = t.ToppingID
+inner join toppingCurrent as tc on tc.ToppingCurrentBaseToppingID = BaseToppingID) as double) + 
+cast((select BaseCostPrize from baseCost where BaseCostCrustID = 1 AND BaseCostSizeID = 3) as double)),
+
+PizzaTotalCost = 
+cast((select sum(ToppingCost * BaseToppingUnit * ToppingCurrentCounter) from topping as t
+inner join
+	(select * from baseTopping
+	where BaseToppingID in 
+		(select ToppingCurrentBaseToppingID from toppingCurrent
+		where ToppingCurrentPizzaID = 16)) as bt on bt.BaseToppingToppingID = t.ToppingID
+inner join toppingCurrent as tc on tc.ToppingCurrentBaseToppingID = BaseToppingID) as double) + 
+cast((select BaseCostCost from baseCost where BaseCostCrustID = 1 AND BaseCostSizeID = 3) as double)
+where PizzaID = 16;
+
+update customerOrder
+set CustomerOrderTotalprice = cast((select sum(PizzaTotalPrice) from pizza where PizzaOrderID = 7) as double),
+CustomerOrderTotalcost = cast((select sum(PizzaTotalCost) from pizza where PizzaOrderID = 7) as double)
+where CustomerOrderID = 7;
+
+
+
+
 /*
-insert into toppingCurrent(ToppingCurrentBaseToppingID, ToppingCurrentCounter) values
-()
-insert into pizza(PizzaCrustID, PizzaSizeID, PizzaOrderID, PizzaDiscountID, PizzaState, PizzaTotalCost, PizzaTotalPrice)
-values(3, 1)
+
+SET GLOBAL log_bin_trust_function_creators = 1;
+delimiter !
+create function getPizzaTotalPrice (sID int, cID int, pID int) returns double DETERMINISTIC NO SQL READS SQL DATA
+begin
+	return
+    (cast((select sum(ToppingPrice * ToppingCurrentCounter) from topping as t
+	inner join
+		(select * from baseTopping
+		where BaseToppingID in 
+			(select ToppingCurrentBaseToppingID from toppingCurrent
+			where ToppingCurrentPizzaID = pID)) as bt on bt.BaseToppingToppingID = t.ToppingID
+	inner join toppingCurrent as tc on tc.ToppingCurrentBaseToppingID = BaseToppingID) as double) + 
+	cast((select BaseCostPrize from baseCost where BaseCostSizeID = sID AND BaseCostCrustID = cID) as double));
+end !
+delimiter ;
+
+delimiter !
+create function getPizzaTotalCost (sID int, cID int, pID int) returns double READS SQL DATA DETERMINISTIC
+begin
+	return
+    cast((select sum(ToppingCost * BaseToppingUnit * ToppingCurrentCounter) from topping as t
+	inner join
+		(select * from baseTopping
+		where BaseToppingID in 
+			(select ToppingCurrentBaseToppingID from toppingCurrent
+			where ToppingCurrentPizzaID = pID)) as bt on bt.BaseToppingToppingID = t.ToppingID
+	inner join toppingCurrent as tc on tc.ToppingCurrentBaseToppingID = BaseToppingID) as double) + 
+	cast((select BaseCostCost from baseCost where BaseCostSizeID = sID AND BaseCostCrustID = cID) as double);
+end !
+delimiter ;
 
 */

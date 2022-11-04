@@ -1,3 +1,6 @@
+-- Sahil Patel and Kevin Mody
+
+use Pizzeria;
 drop table if exists toppingCurrent;
 drop table if exists pizza;
 drop table if exists dineIn;
