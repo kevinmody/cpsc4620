@@ -1,6 +1,8 @@
 -- Sahil Patel and Kevin Mody
 
 use Pizzeria;
+drop table if exists pizzaDiscount;
+drop table if exists orderDiscount;
 drop table if exists toppingCurrent;
 drop table if exists pizza;
 drop table if exists dineIn;

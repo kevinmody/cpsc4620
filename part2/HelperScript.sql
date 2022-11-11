@@ -114,3 +114,145 @@ delimiter ;
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+use Pizzeria;
+
+-- select * from customerOrder;
+-- select * from pizza;
+select * from topping;
+select * from baseTopping;
+select * from toppingCurrent;
+
+-- sum(ToppingCost * BaseToppingUnit * ToppingCurrentCounter)
+select * from topping as t
+inner join
+	(select * from baseTopping
+	where BaseToppingID in 
+		(select ToppingCurrentBaseToppingID from toppingCurrent
+		where ToppingCurrentPizzaID = 1)) as bt on bt.BaseToppingToppingID = t.ToppingID;
+-- inner join toppingCurrent as tc on tc.ToppingCurrentBaseToppingID = BaseToppingID;
+
+select ToppingCurrentPizzaID, sum(ToppingCost * BaseToppingUnit * ToppingCurrentCounter) from toppingCurrent
+inner join baseTopping on ToppingCurrentBaseToppingID = BaseToppingID
+inner join topping on BaseToppingToppingID = ToppingID
+group by ToppingCurrentPizzaID;
+
+-- Change the ToppingCurrentPizzaID for the pizzaID you want
+select * from toppingCurrent
+inner join baseTopping on ToppingCurrentBaseToppingID = BaseToppingID
+inner join topping on BaseToppingToppingID = ToppingID
+where ToppingCurrentPizzaID = 1;
+
+
+select
+ToppingCurrentPizzaID, 
+sum(ToppingCost * BaseToppingUnit * ToppingCurrentCounter) as TotalToppingCost, 
+sum(ToppingPrice * ToppingCurrentCounter) as TotalToppingPrice
+from toppingCurrent
+inner join baseTopping on ToppingCurrentBaseToppingID = BaseToppingID
+inner join topping on BaseToppingToppingID = ToppingID
+where ToppingCurrentPizzaID = 1;
+
+select
+ToppingCurrentPizzaID, 
+sum(ToppingCost * BaseToppingUnit * ToppingCurrentCounter) as TotalToppingCost, 
+sum(ToppingPrice * ToppingCurrentCounter) as TotalToppingPrice
+from toppingCurrent
+inner join baseTopping on ToppingCurrentBaseToppingID = BaseToppingID
+inner join topping on BaseToppingToppingID = ToppingID
+group by ToppingCurrentPizzaID;
+
+select bc.BaseCostCost, bc.BaseCostPrize from pizza as p
+inner join baseCost as bc on p.PizzaSizeID = bc.BaseCostSizeID AND p.PizzaCrustID = bc.BaseCostCrustID
+where p.PizzaID = 1;
+
+
+
+select
+cast(
+	(select sum(ToppingCost * BaseToppingUnit * ToppingCurrentCounter) as TotalToppingCost
+	from toppingCurrent
+	inner join baseTopping on ToppingCurrentBaseToppingID = BaseToppingID
+	inner join topping on BaseToppingToppingID = ToppingID
+	where ToppingCurrentPizzaID = 3) as decimal)
++cast(
+	(select bc.BaseCostCost from pizza as p
+	inner join baseCost as bc on p.PizzaSizeID = bc.BaseCostSizeID AND p.PizzaCrustID = bc.BaseCostCrustID
+	where p.PizzaID = 3) as decimal);
+    
+select BaseCostCost from baseCost
+where
+BaseCostCrustID = (select PizzaCrustID from pizza where PizzaID = 10) AND
+BaseCostSizeID = (select PizzaSizeID from pizza where PizzaID = 10);
+
+select BaseCostCost from baseCost, (select PizzaCrustID as pcID, PizzaSizeID as psID from pizza where PizzaID = 10) as p
+where BaseCostCrustID = p.pcID AND BaseCostSizeID = p.psID;
+
+
+
+drop procedure if exists updatePizza;
+delimiter !
+create procedure updatePizza (IN pID integer)
+begin
+	update pizza
+    set PizzaTotalCost = 
+    cast(
+		(select sum(ToppingCost * BaseToppingUnit * ToppingCurrentCounter) as TotalToppingCost
+		from toppingCurrent
+		inner join baseTopping on ToppingCurrentBaseToppingID = BaseToppingID
+		inner join topping on BaseToppingToppingID = ToppingID
+		where ToppingCurrentPizzaID = pID) as decimal)
+	+cast(
+		(select BaseCostCost from baseCost
+		where
+		BaseCostCrustID = (select PizzaCrustID from pizza where PizzaID = pID) AND
+		BaseCostSizeID = (select PizzaSizeID from pizza where PizzaID = pID)) as decimal);
+end !
+delimiter ;
+
+drop procedure if exists updatePizza;
+delimiter !
+create procedure updatePizza (IN pID integer)
+begin
+	update pizza
+    set PizzaTotalCost = 
+    cast(
+		(select sum(ToppingCost * BaseToppingUnit * ToppingCurrentCounter) as TotalToppingCost
+		from toppingCurrent
+		inner join baseTopping on ToppingCurrentBaseToppingID = BaseToppingID
+		inner join topping on BaseToppingToppingID = ToppingID
+		where ToppingCurrentPizzaID = pID) as decimal)
+	+cast(
+		(select BaseCostCost from baseCost, (select PizzaCrustID as pcID, PizzaSizeID as psID from pizza where PizzaID = 10) as p
+		 where BaseCostCrustID = p.pcID AND BaseCostSizeID = p.psID) as decimal);
+end !
+delimiter ;
+
+/*
+delimiter !
+create function getPizzaTotalPrice (sID int, cID int, pID int) returns double DETERMINISTIC NO SQL READS SQL DATA
+begin
+	return
+    (cast((select sum(ToppingPrice * ToppingCurrentCounter) from topping as t
+	inner join
+		(select * from baseTopping
+		where BaseToppingID in 
+			(select ToppingCurrentBaseToppingID from toppingCurrent
+			where ToppingCurrentPizzaID = pID)) as bt on bt.BaseToppingToppingID = t.ToppingID
+	inner join toppingCurrent as tc on tc.ToppingCurrentBaseToppingID = BaseToppingID) as double) + 
+	cast((select BaseCostPrize from baseCost where BaseCostSizeID = sID AND BaseCostCrustID = cID) as double));
+end !
+delimiter ;
+*/

@@ -15,6 +15,10 @@ select * from baseCost;
 select * from size;
 select * from crust;
 
+select * from toppingCurrent
+inner join baseTopping on ToppingCurrentBaseToppingID = BaseToppingID
+inner join pizza on PizzaID = ToppingCurrentPizzaID
+where PizzaID in (3, 10, 11, 12, 13, 14, 15, 16);
 
 
 select bt.BaseToppingID, size.SizeType, topping.ToppingName, bt.BaseToppingUnit

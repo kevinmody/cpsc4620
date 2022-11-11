@@ -60,8 +60,6 @@ create table discount (
 
 create table customerOrder (
 	CustomerOrderID integer not null primary key auto_increment, 
-    CustomerOrderDiscountID int,
-    foreign key (CustomerOrderDiscountID) references discount(DiscountID),
     CustomerOrderType varchar(255) not null check(CustomerOrderType in ("DineIn", "Pickup", "Delivery")),
     CustomerOrderTimeStamp timestamp not null,
     CustomerOrderTotalCost double(8,2) not null default 0.0,
@@ -95,11 +93,9 @@ create table pizza(
 	PizzaCrustID int not null,
     PizzaSizeID int not null,
     PizzaOrderID int not null,
-    PizzaDiscountID int,
     foreign key (PizzaCrustID) references baseCost(BaseCostCrustID),
     foreign key (PizzaSizeID) references baseCost(BaseCostSizeId),
-    foreign key (PizzaOrderID) references customerOrder(CustomerOrderID),
-    foreign key (PizzaDiscountID) references discount(DiscountID),
+    foreign key (PizzaOrderID) references customerOrder(CustomerOrderID), 
     
     PizzaState varchar(255) not null,
     PizzaTotalCost double(8,2) not null,
@@ -113,5 +109,21 @@ create table toppingCurrent (
     ToppingCurrentPizzaID int not null,
 	foreign key (ToppingCurrentPizzaID) references pizza(PizzaID) on update cascade,
 	ToppingCurrentCounter Integer not null default 0
+);
+
+create table orderDiscount (
+	OrderDiscountID Integer primary key auto_increment,
+    OrderDiscountDiscountID integer not null,
+    OrderDiscountOrderID integer not null,
+    foreign key (OrderDiscountDiscountID) references discount(DiscountID),
+    foreign key (OrderDiscountOrderID) references customerOrder(CustomerOrderID)
+);
+
+create table pizzaDiscount (
+	PizzaDiscountID integer primary key auto_increment,
+    PizzaDiscountDiscountID integer not null,
+    PizzaDiscountOrderID integer not null,
+    foreign key (PizzaDiscountDiscountID) references discount(DiscountID),
+    foreign key (PizzaDiscountOrderID) references pizza(PizzaID)
 );
 
