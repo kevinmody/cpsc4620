@@ -19,8 +19,8 @@ public class Order
 	private int CustID;
 	private String OrderType;
 	private String Date;
-	private double CustPrice;
-	private double BusPrice;
+	private double Price;
+	private double Cost;
 	private int isComplete;
 	
 	//notice that these are not part of the ERD design, but we need a way to associate pizzas and discounts with a specific order
@@ -28,13 +28,13 @@ public class Order
 	private ArrayList<Discount> DiscountList;
 	
 	
-	public Order(int orderID, int custID, String orderType, String date, double custPrice, double busPrice, int iscomplete) {
+	public Order(int orderID, int custID, String orderType, String date, double price, double cost, int iscomplete) {
 		OrderID = orderID;
 		CustID = custID;
 		OrderType = orderType;
 		Date = date;
-		CustPrice = custPrice;
-		BusPrice = busPrice;
+		Price = price;
+		Cost = cost;
 		this.isComplete = iscomplete;
 		PizzaList = new ArrayList<Pizza>();
 		DiscountList = new ArrayList<Discount>();
@@ -48,104 +48,85 @@ public class Order
 	
 	//When we add a discount, go ahead and update the price. Notice that this only updates the price of the variable and doesn't touch the database
 	//so discount must be added before the order is sent to the DB.
-	public void addDiscount(Discount d)
-	{
+	public void addDiscount(Discount d) {
 		DiscountList.add(d);
-		if(d.isPercent())
-		{
-			this.CustPrice = (this.CustPrice*(1-(d.getAmount() / 100)));//turn the amount into a percent
-		}
-		else
-		{
-			this.CustPrice -= d.getAmount();
+		if (d.isPercent()) {
+			this.Price = (this.Price * (1 - (d.getAmount() / 100)));//turn the amount into a percent
+		} else {
+			this.Price -= d.getAmount();
 		}
 	}
 
 	public int getOrderID() {
 		return OrderID;
 	}
+	public void setOrderID(int orderID) {
+		OrderID = orderID;
+	}
 
 
 	public int getCustID() {
 		return CustID;
+	}
+	public void setCustID(int custID) {
+		CustID = custID;
 	}
 
 
 	public String getOrderType() {
 		return OrderType;
 	}
+	public void setOrderType(String orderType) {
+		OrderType = orderType;
+	}
 
 
 	public String getDate() {
 		return Date;
 	}
-
-
-	public double getCustPrice() {
-		return CustPrice;
+	public void setDate(String date) {
+		Date = date;
 	}
 
 
-	public double getBusPrice() {
-		return BusPrice;
+	public double getPrice() {
+		return Price;
+	}
+	public void setPrice(double price) {
+		Price = price;
+	}
+
+
+	public double getCost() {
+		return Cost;
+	}
+	public void setCost(double cost) {
+		Cost = cost;
 	}
 	
 	public int getIsComplete() {
 		return isComplete;
+	}
+	public void setIsComplete(int iscomplete) {
+		this.isComplete = iscomplete;
 	}
 
 
 	public ArrayList<Pizza> getPizzaList() {
 		return PizzaList;
 	}
-
-
-	public ArrayList<Discount> getDiscountList() {
-		return DiscountList;
-	}
-
-
-	public void setOrderID(int orderID) {
-		OrderID = orderID;
-	}
-
-
-	public void setCustID(int custID) {
-		CustID = custID;
-	}
-
-
-	public void setOrderType(String orderType) {
-		OrderType = orderType;
-	}
-
-
-	public void setDate(String date) {
-		Date = date;
-	}
-
-
-	public void setCustPrice(double custPrice) {
-		CustPrice = custPrice;
-	}
-
-
-	public void setBusPrice(double busPrice) {
-		BusPrice = busPrice;
-	}
-
-	public void setIsComplete(int iscomplete) {
-		this.isComplete = iscomplete;
-	}
-
 	public void setPizzaList(ArrayList<Pizza> pizzaList) {
 		PizzaList = pizzaList;
 	}
 
 
+	public ArrayList<Discount> getDiscountList() {
+		return DiscountList;
+	}
 	public void setDiscountList(ArrayList<Discount> discountList) {
 		DiscountList = discountList;
 	}
+
 
 	
 	//two print statements because one is slightly easier to read. If you can make pretty print statements, you're absolutely welcome to change these.
@@ -153,8 +134,12 @@ public class Order
 	public String toString() {
 		try 
 		{
-			return "OrderID=" + OrderID + " | Date Placed= " + this.Date + " | For customer: " + DBNinja.getCustomerName(CustID) + " | OrderType= " + OrderType + ", Placed on: " + Date
-					+ " | CustPrice= " + CustPrice + ", BusPrice= " + BusPrice;
+			return "OrderID=" + OrderID +
+					"\nDate Placed = " + this.Date +
+					"\nCustomer = " + DBNinja.getCustomerName(CustID) +
+					"\nOrderType = " + OrderType +
+					"\nPrice = " + Price +
+					"\nCost = " + Cost;
 		} 
 		catch (SQLException | IOException e)
 		{
@@ -167,11 +152,12 @@ public class Order
 	{
 		try 
 		{
-			boolean iscomplete = true;
-			if(isComplete == 0)
-				iscomplete = false;
-			return "OrderID=" + OrderID + " | Date Placed= " + this.Date + " | Customer name= " + DBNinja.getCustomerName(CustID) + ", OrderType= " + OrderType + ", IsComplete= " + iscomplete;
-		} 
+			return "OrderID = " + OrderID +
+					"\nDate Placed = " + this.Date +
+					"\nCustomer name = " + DBNinja.getCustomerName(CustID) +
+					"\nOrderType = " + OrderType +
+					"\nIsComplete = " + isComplete;
+		}
 		catch (SQLException e) {
 			e.printStackTrace();
 			return "ERROR IN SIMPLE PRINT CUSTOMER";

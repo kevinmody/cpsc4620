@@ -14,12 +14,30 @@ select * from topping;
 select * from baseCost;
 select * from size;
 select * from crust;
+select * from pizzaDiscount;
+select * from orderDiscount;
 
-select * from toppingCurrent
+
+select * from pizza;
+select * from toppingCurrent;
+select * from baseTopping;
+select * from topping;
+select * from baseCost;
+select * from size;
+select * from crust;
+
+
+-- PizzaID, ToppingCurrentBaseToppingID, ToppingCurrentCounter 
+select 
+PizzaID, ToppingCurrentBaseToppingID, ToppingName, SizeType, ToppingCurrentCounter, PizzaTotalCost, PizzaTotalPrice, ToppingPrice, ToppingCost, BaseToppingUnit,
+(ToppingCost * BaseToppingUnit * ToppingCurrentCounter) as CurrentToppingCost_calc
+from toppingCurrent
 inner join baseTopping on ToppingCurrentBaseToppingID = BaseToppingID
 inner join pizza on PizzaID = ToppingCurrentPizzaID
-where PizzaID in (3, 10, 11, 12, 13, 14, 15, 16);
-
+inner join topping on ToppingID = BaseToppingToppingID
+inner join size on SizeID = PizzaSizeID
+where PizzaID in (11, 12, 15, 16);
+-- where PizzaID in (11, 12, 13, 14, 15, 16);
 
 select bt.BaseToppingID, size.SizeType, topping.ToppingName, bt.BaseToppingUnit
 from baseTopping as bt
@@ -32,6 +50,13 @@ from baseCost as bc
 inner join size on bc.BaseCostSizeID = size.SizeID
 inner join crust on bc.BaseCostCrustID = crust.CrustID
 order by size.SizeID;
+
+-- pd.PizzaDiscountID, p.PizzaID, pd.PizzaDiscountDiscountID
+select * from pizzaDiscount as pd
+inner join discount as d on d.DiscountID = pd.PizzaDiscountDiscountID
+inner join pizza as p on p.PizzaID = pd.PizzaDiscountPizzaID
+inner join customerOrder as o on o.CustomerOrderID = p.PizzaOrderID;
+
 
 
 

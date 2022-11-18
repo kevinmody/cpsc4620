@@ -122,8 +122,8 @@ create table orderDiscount (
 create table pizzaDiscount (
 	PizzaDiscountID integer primary key auto_increment,
     PizzaDiscountDiscountID integer not null,
-    PizzaDiscountOrderID integer not null,
+    PizzaDiscountPizzaID integer not null,
     foreign key (PizzaDiscountDiscountID) references discount(DiscountID),
-    foreign key (PizzaDiscountOrderID) references pizza(PizzaID)
+    foreign key (PizzaDiscountPizzaID) references pizza(PizzaID)
 );
 

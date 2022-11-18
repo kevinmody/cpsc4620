@@ -1,11 +1,6 @@
 -- Sahil Patel and Kevin Mody
 
 use Pizzeria;
-
-create user if not exists JavaMan identified by "SahilKevin";
-grant all privileges on Pizzeria to JavaMan;
-
-
 insert into size(SizeType) values
 ("Small"),
 ("Medium"),
@@ -125,7 +120,6 @@ insert into baseTopping(BaseToppingToppingID, BaseToppingSizeID, BaseToppingUnit
 (17, 3, 2),
 (17, 4, 3);
 
-
 insert into discount(DiscountName, DiscountValue, DiscountIsPercent, DiscountOnOrder) values
 ("Employee", 15, True, True),
 ("Lunch Special Medium", 1.00, False, False),
@@ -145,15 +139,16 @@ insert into customerOrder(CustomerOrderID, CustomerOrderType, CustomerOrderTimeS
 values (1, "DineIn", "2022-03-05 12:03:00", 0 ,0);
 insert into dineIn(DineInCustomerOrderID, DineInTableNumber)
 values (1, 14);
-insert into pizza(PizzaID, PizzaCrustID, PizzaSizeID, PizzaOrderID, PizzaState, PizzaTotalPrice, PizzaTotalCost)
-values(1, 1, 3, 1, "Complete", 13.50, 3.68);
+insert into pizza(PizzaID, PizzaCrustID, PizzaSizeID, PizzaOrderID, PizzaState, PizzaTotalCost, PizzaTotalPrice)
+values(1, 1, 3, 1, "Complete", 0, 0);
 insert into toppingCurrent(ToppingCurrentPizzaID, ToppingCurrentBaseToppingID, ToppingCurrentCounter)
 values (1, 51, 2) , (1, 3, 1), (1, 7, 1);
 insert into pizzaDiscount(PizzaDiscountPizzaID, PizzaDiscountDiscountID)
 values (1, 3);
 
+call updatePizza(1);
 call updateCustomerOrder(1);
-call applyDiscount(1);
+
 
 
 -- Order 2 
@@ -168,17 +163,18 @@ insert into customerOrder(CustomerOrderID, CustomerOrderType, CustomerOrderTimeS
 (2, "DineIn", "2022-04-03 12:05:00", 0, 0);
 insert into dineIn(DineInCustomerOrderID, DineInTableNumber) values
 (2, 4);
-insert into pizza(PizzaID, PizzaCrustID, PizzaSizeID, PizzaOrderID, PizzaState, PizzaTotalPrice, PizzaTotalCost) values
-(2, 3, 2, 2, "Complete", 10.60, 3.23),
-(3, 2, 1, 2, "Complete", 6.75, 1.40);
+insert into pizza(PizzaID, PizzaCrustID, PizzaSizeID, PizzaOrderID, PizzaState, PizzaTotalCost, PizzaTotalPrice) values
+(2, 3, 2, 2, "Complete", 0, 0),
+(3, 2, 1, 2, "Complete", 0, 0);
 insert into toppingCurrent(ToppingCurrentPizzaID, ToppingCurrentBaseToppingID, ToppingCurrentCounter) values
 (2, 58, 1), (2, 34, 1), (2, 26, 1), (2, 30, 1), (2, 46, 1),
 (3, 49, 1), (3, 13, 1), (3, 45, 1);
 insert into orderDiscount(OrderDiscountOrderID, OrderDiscountDiscountID) values
 (2, 2), (2, 4);
 
+call updatePizza(2);
+call updatePizza(3);
 call updateCustomerOrder(2);
-call applyDiscount(2);
 
 
 -- Order 3
@@ -195,13 +191,13 @@ values (1, "Andrew", "Wilkes-Krier", "8642545861");
 insert into pickup(PickupCustomerOrderID, PickupCustomerID, PickupTimestamp)
 values(3, 1, "2022-03-03 09:50:00");
 
-insert into pizza(PizzaID, PizzaCrustID, PizzaSizeID, PizzaOrderID, PizzaState, PizzaTotalPrice, PizzaTotalCost) values
-(4, 2, 3, 3, "Complete", 10.75, 3.30),
-(5, 2, 3, 3, "Complete", 10.75, 3.30),
-(6, 2, 3, 3, "Complete", 10.75, 3.30),
-(7, 2, 3, 3, "Complete", 10.75, 3.30),
-(8, 2, 3, 3, "Complete", 10.75, 3.30),
-(9, 2, 3, 3, "Complete", 10.75, 3.30);
+insert into pizza(PizzaID, PizzaCrustID, PizzaSizeID, PizzaOrderID, PizzaState, PizzaTotalCost, PizzaTotalPrice) values
+(4, 2, 3, 3, "Complete", 0, 0),
+(5, 2, 3, 3, "Complete", 0, 0),
+(6, 2, 3, 3, "Complete", 0, 0),
+(7, 2, 3, 3, "Complete", 0, 0),
+(8, 2, 3, 3, "Complete", 0, 0),
+(9, 2, 3, 3, "Complete", 0, 0);
 
 insert into toppingCurrent(ToppingCurrentPizzaID, ToppingCurrentBaseToppingID, ToppingCurrentCounter) values
 (4, 51, 1), (4, 3, 1),
@@ -211,8 +207,13 @@ insert into toppingCurrent(ToppingCurrentPizzaID, ToppingCurrentBaseToppingID, T
 (8, 51, 1), (8, 3, 1),
 (9, 51, 1), (9, 3, 1);
 
+call updatePizza(4);
+call updatePizza(5);
+call updatePizza(6);
+call updatePizza(7);
+call updatePizza(8);
+call updatePizza(9);
 call updateCustomerOrder(3);
-call applyDiscount(3);
 
 
 -- Order 4
@@ -230,10 +231,10 @@ values(4,"Delivery","2022-04-20 19:11:00", 0, 0);
 insert into delivery(DeliveryCustomerOrderID, DeliveryCustomerID, DeliveryStreet, DeliveryCity, DeliveryState, DeliveryZip)
 values(4, 1, "115 Party Blvd", "Anderson", "SC", "29621");
 
-insert into pizza(PizzaID, PizzaCrustID, PizzaSizeID, PizzaOrderID, PizzaState, PizzaTotalPrice, PizzaTotalCost) values
-(10, 2, 4, 4, "Complete", 14.50, 5.59),
-(11, 2, 4, 4, "Complete", 17.00, 5.59),
-(12, 2, 4, 4, "Complete", 14.00, 5.68);
+insert into pizza(PizzaID, PizzaCrustID, PizzaSizeID, PizzaOrderID, PizzaState, PizzaTotalCost, PizzaTotalPrice) values
+(10, 2, 4, 4, "Complete", 0, 0),
+(11, 2, 4, 4, "Complete", 0, 0),
+(12, 2, 4, 4, "Complete", 0, 0);
 
 insert into toppingCurrent(ToppingCurrentPizzaID, ToppingCurrentBaseToppingID, ToppingCurrentCounter) values
 (10, 4, 1), (10,8,1), (10, 56,1),
@@ -245,8 +246,10 @@ insert into orderDiscount(OrderDiscountOrderID, OrderDiscountDiscountID) values
 insert into pizzaDiscount(PizzaDiscountPizzaID, PizzaDiscountDiscountID) values
 (11, 4);
 
+call updatePizza(10);
+call updatePizza(11);
+call updatePizza(12);
 call updateCustomerOrder(4);
-call applyDiscount(4);
 
 
 -- Order 5
@@ -264,8 +267,8 @@ values (2, "Matt", "Engers", "8644749953");
 insert into pickup(PickupCustomerOrderID, PickupCustomerID, PickupTimestamp)
 values(5, 2, "2022-03-02 17:50:00");
 
-insert into pizza(PizzaID, PizzaCrustID, PizzaSizeID, PizzaOrderID, PizzaState, PizzaTotalPrice, PizzaTotalCost)
-values(13, 4, 4, 5, "Complete", 16.85, 7.85);
+insert into pizza(PizzaID, PizzaCrustID, PizzaSizeID, PizzaOrderID, PizzaState, PizzaTotalCost, PizzaTotalPrice)
+values(13, 4, 4, 5, "Complete", 0, 0);
 
 insert into toppingCurrent(ToppingCurrentPizzaID, ToppingCurrentBaseToppingID, ToppingCurrentCounter)
 values (13,64,1), (13, 20, 1), (13, 24, 1), (13, 28, 1), (13, 32, 1), (13, 36, 1);
@@ -273,8 +276,8 @@ values (13,64,1), (13, 20, 1), (13, 24, 1), (13, 28, 1), (13, 32, 1), (13, 36, 1
 insert into pizzaDiscount(PizzaDiscountPizzaID, PizzaDiscountDiscountID) values
 (13, 4);
 
+call updatePizza(13);
 call updateCustomerOrder(5);
-call applyDiscount(5);
 
 
 -- Order 6
@@ -293,14 +296,14 @@ insert into delivery(DeliveryCustomerOrderID, DeliveryCustomerID, DeliveryStreet
 values(6, 3, "6745 Wessex St", "Anderson", "SC", "29621");
 
 
-insert into pizza(PizzaID, PizzaCrustID, PizzaSizeID, PizzaOrderID, PizzaState, PizzaTotalPrice, PizzaTotalCost)
-values(14, 1, 3, 6, "Complete", 13.25, 3.20);
+insert into pizza(PizzaID, PizzaCrustID, PizzaSizeID, PizzaOrderID, PizzaState, PizzaTotalCost, PizzaTotalPrice)
+values(14, 1, 3, 6, "Complete", 0, 0);
 
 insert into toppingCurrent(ToppingCurrentPizzaID, ToppingCurrentBaseToppingID, ToppingCurrentCounter)
 values(14, 15, 1),(14, 19, 1), (14,23,1), (14,31,1), (14,55,2);
 
+call updatePizza(14);
 call updateCustomerOrder(6);
-call applyDiscount(6);
 
 
 -- Order 7
@@ -318,9 +321,9 @@ values (4, "Milo", "Auckerman", "8648785679");
 insert into delivery(DeliveryCustomerOrderID, DeliveryCustomerID, DeliveryStreet, DeliveryCity, DeliveryState, DeliveryZip)
 values(7, 4, "879 Suburban Home", "Anderson", "SC", "29621");
 
-insert into pizza(PizzaID, PizzaCrustID, PizzaSizeID, PizzaOrderID, PizzaState, PizzaTotalPrice, PizzaTotalCost) values
-(15, 1, 3, 7, "Complete", 12.00, 3.75),
-(16, 1, 3, 7, "Complete", 12.00, 2.55);
+insert into pizza(PizzaID, PizzaCrustID, PizzaSizeID, PizzaOrderID, PizzaState, PizzaTotalCost, PizzaTotalPrice) values
+(15, 1, 3, 7, "Complete", 0, 0),
+(16, 1, 3, 7, "Complete", 0, 0);
 
 insert into toppingCurrent(ToppingCurrentPizzaID, ToppingCurrentBaseToppingID, ToppingCurrentCounter) values
 (15, 55, 2),
@@ -329,94 +332,75 @@ insert into toppingCurrent(ToppingCurrentPizzaID, ToppingCurrentBaseToppingID, T
 insert into orderDiscount(OrderDiscountOrderID, OrderDiscountDiscountID) values
 (7, 1);
 
+call updatePizza(15);
+call updatePizza(16);
 call updateCustomerOrder(7);
-call applyDiscount(7);
 
+
+
+
+select * from pizza;
+
+
+
+drop procedure if exists updatePizza;
+delimiter !
+create procedure updatePizza (IN pID integer)
+begin
+	update pizza
+    
+-- Updating Total Cost
+    set PizzaTotalCost = 
+    cast(
+		(select sum(ToppingCost * BaseToppingUnit * ToppingCurrentCounter) as TotalToppingCost
+		from toppingCurrent
+		inner join baseTopping on ToppingCurrentBaseToppingID = BaseToppingID
+		inner join topping on BaseToppingToppingID = ToppingID
+		where ToppingCurrentPizzaID = pID) as decimal(8,2))
+	+cast(
+		(select BaseCostCost from baseCost, (select PizzaCrustID as pcID, PizzaSizeID as psID from pizza where PizzaID = pID) as p
+		 where BaseCostCrustID = p.pcID AND BaseCostSizeID = p.psID) as decimal(8,2)),
+         
+-- Updating Total Price
+     PizzaTotalPrice = 
+     cast(
+		(select sum(ToppingPrice * ToppingCurrentCounter) as TotalToppingPrice
+		from toppingCurrent
+		inner join baseTopping on ToppingCurrentBaseToppingID = BaseToppingID
+		inner join topping on BaseToppingToppingID = ToppingID
+		where ToppingCurrentPizzaID = pID) as decimal(8,2))
+	+cast(
+		(select BaseCostPrize from baseCost, (select PizzaCrustID as pcID, PizzaSizeID as psID from pizza where PizzaID = pID) as p
+		 where BaseCostCrustID = p.pcID AND BaseCostSizeID = p.psID) as decimal(8,2))
+         
+-- WHERE clause         
+	where PizzaID = pID;
+end !
+delimiter ;
 
 drop procedure if exists updateCustomerOrder;
 delimiter !
 create procedure updateCustomerOrder (IN oID integer)
 begin
-	declare max_pID integer default 0;
-    declare min_pID integer default 0;
-    declare discount_value decimal(8,2) default 0.0;
-    declare discount_percent decimal(8,2) default 0.0;
-    
-    select max(PizzaID) from pizza where PizzaOrderID = oID into max_pID;
-    select min(PizzaID) from pizza where PizzaOrderID = oID into min_pID;
-
 	update customerOrder
-	set CustomerOrderTotalCost = cast((select sum(PizzaTotalCost) from pizza where PizzaOrderID = oID) as decimal(8,2))
-    where CustomerOrderID = oID;
-    -- CustomerOrderTotalPrice = cast((select sum(PizzaTotalPrice) from pizza where PizzaOrderID = oID) as decimal(8,2))
-    
-    while min_pID < max_pID do
-		
-        select d.DiscountValue
-		from pizzaDiscount as pd
-		inner join pizza as p on pd.PizzaDiscountPizzaID = p.PizzaID
-		inner join customerOrder as co on p.PizzaOrderID = co.CustomerOrderID
-		inner join discount as d on pd.PizzaDiscountDiscountID = d.DiscountID
-		where PizzaID = min_pID and CustomerOrderID = oID and d.DiscountIsPercent = FALSE
-        into discount_value;
-        
-        select d.DiscountValue
-		from pizzaDiscount as pd
-		inner join pizza as p on pd.PizzaDiscountPizzaID = p.PizzaID
-		inner join customerOrder as co on p.PizzaOrderID = co.CustomerOrderID
-		inner join discount as d on pd.PizzaDiscountDiscountID = d.DiscountID
-		where PizzaID = min_pID and CustomerOrderID = oID and d.DiscountIsPercent = TRUE
-        into discount_percent;
-        
-		update customerOrder
-		set CustomerOrderTotalPrice = case
-        when discount_value is not null then
-			CustomerOrderTotalPrice + cast((select PizzaTotalPrice from pizza where PizzaOrderID = oID and PizzaID = min_pID) as decimal(8,2)) - discount_value
-		when discount_percent is not null then
-			CustomerOrderTotalPrice + cast((select PizzaTotalPrice from pizza where PizzaOrderID = oID and PizzaID = min_pID) as decimal(8,2)) * (1.00 - (discount_percent/100.00))
-		end
-        where CustomerOrderID = oID;
-        
-        set min_pID = min_pID + 1;
-	end while;
-    
-	
+
+	set CustomerOrderTotalprice = cast((select sum(PizzaTotalPrice) from pizza where PizzaOrderID = oID) as double),
+	CustomerOrderTotalcost = cast((select sum(PizzaTotalCost) from pizza where PizzaOrderID = oID) as double)
+	where CustomerOrderID = oID;
 end !
 delimiter ;
 
-
+/*
 drop procedure if exists applyDiscount;
 delimiter !
 create procedure applyDiscount (IN oID integer)
 begin
-	set @order_non_percent_discount = cast((select sum(d.DiscountValue) from orderDiscount as od
-										inner join discount as d on d.DiscountID = od.OrderDiscountDiscountID 
-										where od.OrderDiscountOrderID = oID AND d.DiscountIsPercent = FALSE) as decimal(8,2));
-	set @order_percent_discount = cast((select sum(d.DiscountValue) from orderDiscount as od
-										inner join discount as d on d.DiscountID = od.OrderDiscountDiscountID 
-										where od.OrderDiscountOrderID = oID AND d.DiscountIsPercent = TRUE) as decimal(8,2));
-	update customerOrder
-    set CustomerOrderTotalPrice = case
-        when @order_non_percent_discount is not null then CustomerOrderTotalPrice - @order_non_percent_discount
-		else CustomerOrderTotalPrice
-		end,
-	
-	CustomerOrderTotalPrice = case
-        when @order_percent_discount is not null then CustomerOrderTotalPrice * (1.00-(@order_percent_discount/100.00))
-		else CustomerOrderTotalPrice
-		end
-        
-	/*
-    set CustomerOrderTotalprice = case
-        when order_non_percent_discount is not null then CustomerOrderTotalprice - order_non_percent_discount
-        when order_percent_discount is not null then CustomerOrderTotalprice * (1.00-(order_percent_discount/100.00))
-		else CustomerOrderTotalprice
-		end;
-	*/
-    where CustomerOrderID = oID;
+	update pizza
+    set PizzaTotalPrice = 
+    
 end !
 delimiter ;
-
+*/
 
 /*
 

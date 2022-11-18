@@ -127,8 +127,6 @@ delimiter ;
 
 
 
-use Pizzeria;
-
 -- select * from customerOrder;
 -- select * from pizza;
 select * from topping;
@@ -256,3 +254,45 @@ begin
 end !
 delimiter ;
 */
+
+
+
+select sum(d.DiscountValue) from orderDiscount as od
+inner join discount as d on d.DiscountID = od.OrderDiscountDiscountID 
+where od.OrderDiscountOrderID = 2 AND d.DiscountIsPercent = FALSE; 
+
+select cast((select sum(d.DiscountValue) from orderDiscount as od
+										inner join discount as d on d.DiscountID = od.OrderDiscountDiscountID 
+										where od.OrderDiscountOrderID = 1 AND d.DiscountIsPercent = TRUE) as decimal(8,2));
+                                        
+select *, sum(d.DiscountValue) from pizzaDiscount as pd
+inner join discount as d on d.DiscountID = pd.PizzaDiscountDiscountID
+group by d.DiscountIsPercent;
+-- where pd.PizzaDiscountPizzaID = 7
+
+select d.DiscountIsPercent
+from pizzaDiscount as pd
+inner join pizza as p on pd.PizzaDiscountPizzaID = p.PizzaID
+inner join customerOrder as co on p.PizzaOrderID = co.CustomerOrderID
+inner join discount as d on pd.PizzaDiscountDiscountID = d.DiscountID
+where PizzaID = 11 and CustomerOrderID = 4;
+
+
+
+select count(*) from pizza where PizzaOrderID = 2;
+
+
+/*
+Wrong Pizza proce and Cost
+3 Both
+10 Cost
+11 Cost
+12 Cost
+13 Price
+14 Both
+15 Cost
+16 Cost
+*/
+
+
+

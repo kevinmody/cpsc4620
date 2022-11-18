@@ -30,12 +30,12 @@ public final class DBNinja {
 	// Change these variables to however you record dine-in, pick-up and delivery,
 	// and sizes and
 	// crusts
-	public final static String pickup = "pickup";
-	public final static String delivery = "delivery";
-	public final static String dine_in = "dinein";
+	public final static String pickup = "Pickup";
+	public final static String delivery = "Delivery";
+	public final static String dine_in = "Dine-in";
 
-	public final static String size_s = "small";
-	public final static String size_m = "medium";
+	public final static String size_s = "Small";
+	public final static String size_m = "Medium";
 	public final static String size_l = "Large";
 	public final static String size_xl = "XLarge";
 
@@ -86,6 +86,7 @@ public final class DBNinja {
 
 		
 		//DO NOT FORGET TO CLOSE YOUR CONNECTION
+		conn.close();
 	}
 	
 	public static void addPizza(Pizza p) throws SQLException, IOException
@@ -103,6 +104,8 @@ public final class DBNinja {
 		
 		
 		//DO NOT FORGET TO CLOSE YOUR CONNECTION
+		conn.close();
+		
 	}
 	
 	public static int getMaxPizzaID() throws SQLException, IOException
@@ -119,11 +122,13 @@ public final class DBNinja {
 		
 		
 		//DO NOT FORGET TO CLOSE YOUR CONNECTION
+		conn.close();
 		return -1;
 	}
-	
-	public static void useTopping(Pizza p, Topping t, boolean isDoubled) throws SQLException, IOException //this function will update toppings inventory in SQL and add entities to the Pizzatops table. Pass in the p pizza that is using t topping
-	{
+
+
+	//this function will update toppings inventory in SQL and add entities to the Pizzatops table. Pass in the p pizza that is using t topping
+	public static void useTopping(Pizza p, Topping t, boolean isDoubled) throws SQLException, IOException {
 		connect_to_db();
 		/*
 		 * This function should 2 two things.
@@ -140,6 +145,7 @@ public final class DBNinja {
 		
 		
 		//DO NOT FORGET TO CLOSE YOUR CONNECTION
+		conn.close();
 	}
 	
 	
@@ -157,6 +163,7 @@ public final class DBNinja {
 		
 		
 		//DO NOT FORGET TO CLOSE YOUR CONNECTION
+		conn.close();
 	}
 	
 	public static void useOrderDiscount(Order o, Discount d) throws SQLException, IOException
@@ -173,6 +180,7 @@ public final class DBNinja {
 		
 		
 		//DO NOT FORGET TO CLOSE YOUR CONNECTION
+		conn.close();
 	}
 	
 
@@ -189,6 +197,7 @@ public final class DBNinja {
 		
 		
 		//DO NOT FORGET TO CLOSE YOUR CONNECTION
+		conn.close();
 	}
 
 
@@ -208,6 +217,7 @@ public final class DBNinja {
 		
 		
 		//DO NOT FORGET TO CLOSE YOUR CONNECTION
+		conn.close();
 	}
 
 
@@ -226,6 +236,7 @@ public final class DBNinja {
 		
 		
 		//DO NOT FORGET TO CLOSE YOUR CONNECTION
+		conn.close();
 	}
 
 	
@@ -250,7 +261,8 @@ public final class DBNinja {
 		
 		
 		
-		//DO NOT FORGET TO CLOSE YOUR CONNECTION		
+		//DO NOT FORGET TO CLOSE YOUR CONNECTION
+		conn.close();		
 	}
 	
 	
@@ -270,6 +282,7 @@ public final class DBNinja {
 		
 		
 		//DO NOT FORGET TO CLOSE YOUR CONNECTION
+		conn.close();
 		return null;
 	}
 
@@ -290,6 +303,7 @@ public final class DBNinja {
 
 		
 		//DO NOT FORGET TO CLOSE YOUR CONNECTION
+		conn.close();
 		return null;
 	}
 	
@@ -362,6 +376,7 @@ public final class DBNinja {
 		
 		
 		//DO NOT FORGET TO CLOSE YOUR CONNECTION
+		conn.close();
 		return bp;
 	}
 	
@@ -398,6 +413,7 @@ public final class DBNinja {
 		
 		
 		//DO NOT FORGET TO CLOSE YOUR CONNECTION
+		conn.close();
 		return bp;
 	}
 
@@ -415,6 +431,7 @@ public final class DBNinja {
 		
 		
 		//DO NOT FORGET TO CLOSE YOUR CONNECTION
+		conn.close();
 		return discs;
 	}
 
@@ -434,6 +451,7 @@ public final class DBNinja {
 		
 		
 		//DO NOT FORGET TO CLOSE YOUR CONNECTION
+		conn.close();
 		return custs;
 	}
 	
@@ -451,6 +469,7 @@ public final class DBNinja {
 		
 		
 		//DO NOT FORGET TO CLOSE YOUR CONNECTION
+		conn.close();
 		return -1;
 	}
 	
@@ -473,6 +492,7 @@ public final class DBNinja {
 		
 		
 		//DO NOT FORGET TO CLOSE YOUR CONNECTION
+		conn.close();
 	}
 	
 	public static void printProfitByPizzaReport() throws SQLException, IOException
@@ -491,6 +511,7 @@ public final class DBNinja {
 		
 		
 		//DO NOT FORGET TO CLOSE YOUR CONNECTION
+		conn.close();
 	}
 	
 	public static void printProfitByOrderType() throws SQLException, IOException
@@ -510,7 +531,8 @@ public final class DBNinja {
 		
 		
 		
-		//DO NOT FORGET TO CLOSE YOUR CONNECTION	
+		//DO NOT FORGET TO CLOSE YOUR CONNECTION
+		conn.close();	
 	}
 	
 	
