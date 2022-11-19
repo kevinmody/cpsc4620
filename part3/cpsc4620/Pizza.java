@@ -117,7 +117,7 @@ public class Pizza {
 
 	public void addToppings(Topping t, boolean isExtra) {
 		Toppings.add(t);
-		this.Cost += t.getTopCost();
+		this.Cost += t.getTopCostPerUnit();
 		this.Price += t.getTopPrice();
 		//also add to the prices of the pizza
 		if (isExtra) {

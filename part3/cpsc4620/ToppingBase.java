@@ -1,9 +1,6 @@
 package cpsc4620;
 
-import java.sql.Array;
-import java.util.ArrayList;
-
-public class Topping {
+public class ToppingBase {
 	/*
 	 *
 	 * Standard Java object class.
@@ -13,32 +10,33 @@ public class Topping {
 	 *
 	 * */
 
-	private int TopID;
+	private int TopBaseID;
+	private int TopBaseSizeID;
+	private int TopBaseUnit;
+
 	private String TopName;
 	private double TopCostPerUnit;
 	private double TopPrice;
 	private int TopMinInventory;
 	private int TopCurrentInventory;
 	private static int TopStaticCounter;
-	private final ArrayList<Double> TopUnitSize;
 
-	public Topping(int _TopID, String _TopName, double _TopCost, double _TopPrice, int _TopMinInventory, int _TopCurrentInventory, ArrayList<Double> _TopUnitSize) {
-		TopID = _TopID;
+	public ToppingBase(int _TopID, String _TopName, double _TopCost, double _TopPrice, int _TopMinInventory, int _TopCurrentInventory) {
+		TopBaseID = _TopID;
 		TopName = _TopName;
 		TopCostPerUnit = _TopCost;
 		TopPrice = _TopPrice;
 		TopMinInventory = _TopMinInventory;
 		TopCurrentInventory = _TopCurrentInventory;
 		TopStaticCounter = 0;
-		TopUnitSize = _TopUnitSize;
 	}
 
 	public int getTopID() {
-		return TopID;
+		return TopBaseID;
 	}
 
 	public void setTopID(int topID) {
-		TopID = topID;
+		TopBaseID = topID;
 	}
 
 	public String getTopName() {
@@ -85,18 +83,6 @@ public class Topping {
 		return TopStaticCounter;
 	}
 
-	public ArrayList<Double> getTopUnitSize() {
-		return TopUnitSize;
-	}
-	public double getTopUnitSize(int size_idx) {
-		return TopUnitSize.get(size_idx);
-	}
-
-	public void updateTopCurrentInventory(int size, boolean isDouble){
-		if (isDouble) TopCurrentInventory -= (2* TopUnitSize.get(size));
-		else TopCurrentInventory -= (TopUnitSize.get(size));
-	}
-
 	public void updateTopStaticCounter(boolean isDouble) {
 		if (isDouble) TopStaticCounter += 2;
 		else TopStaticCounter += 1;
@@ -105,7 +91,7 @@ public class Topping {
 	@Override
 	public String toString() {
 		return "Topping Table" +
-				"\nTopID = " + TopID +
+				"\nTopBaseID = " + TopBaseID +
 				"\nTopName = " + TopName +
 				"\nTopCost = " + TopCostPerUnit +
 				"\nTopPrice = " + TopPrice +

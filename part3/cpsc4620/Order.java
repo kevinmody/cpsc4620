@@ -3,18 +3,17 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public class Order 
-{
+public class Order {
 	/*
-	 * 
-	 * Standard Java object class. 
-	 *  
+	 *
+	 * Standard Java object class.
+	 *
 	 * This file can be modified to match your design, or you can keep it as-is.
 	 * Remember that changes to this class will affect your subtype classes.
-	 * 
+	 *
 	 * */
-	
-	
+
+
 	private int OrderID;
 	private int CustID;
 	private String OrderType;
@@ -22,12 +21,12 @@ public class Order
 	private double Price;
 	private double Cost;
 	private int isComplete;
-	
+
 	//notice that these are not part of the ERD design, but we need a way to associate pizzas and discounts with a specific order
 	private ArrayList<Pizza> PizzaList;
 	private ArrayList<Discount> DiscountList;
-	
-	
+
+
 	public Order(int orderID, int custID, String orderType, String date, double price, double cost, int iscomplete) {
 		OrderID = orderID;
 		CustID = custID;
@@ -39,13 +38,12 @@ public class Order
 		PizzaList = new ArrayList<Pizza>();
 		DiscountList = new ArrayList<Discount>();
 	}
-	
-	public void addPizza(Pizza p)
-	{
+
+	public void addPizza(Pizza p) {
 		PizzaList.add(p);
 	}
-	
-	
+
+
 	//When we add a discount, go ahead and update the price. Notice that this only updates the price of the variable and doesn't touch the database
 	//so discount must be added before the order is sent to the DB.
 	public void addDiscount(Discount d) {
@@ -60,6 +58,7 @@ public class Order
 	public int getOrderID() {
 		return OrderID;
 	}
+
 	public void setOrderID(int orderID) {
 		OrderID = orderID;
 	}
@@ -68,6 +67,7 @@ public class Order
 	public int getCustID() {
 		return CustID;
 	}
+
 	public void setCustID(int custID) {
 		CustID = custID;
 	}
@@ -76,6 +76,7 @@ public class Order
 	public String getOrderType() {
 		return OrderType;
 	}
+
 	public void setOrderType(String orderType) {
 		OrderType = orderType;
 	}
@@ -84,6 +85,7 @@ public class Order
 	public String getDate() {
 		return Date;
 	}
+
 	public void setDate(String date) {
 		Date = date;
 	}
@@ -92,6 +94,7 @@ public class Order
 	public double getPrice() {
 		return Price;
 	}
+
 	public void setPrice(double price) {
 		Price = price;
 	}
@@ -100,13 +103,16 @@ public class Order
 	public double getCost() {
 		return Cost;
 	}
+
 	public void setCost(double cost) {
 		Cost = cost;
 	}
-	
+
+
 	public int getIsComplete() {
 		return isComplete;
 	}
+
 	public void setIsComplete(int iscomplete) {
 		this.isComplete = iscomplete;
 	}
@@ -115,6 +121,7 @@ public class Order
 	public ArrayList<Pizza> getPizzaList() {
 		return PizzaList;
 	}
+
 	public void setPizzaList(ArrayList<Pizza> pizzaList) {
 		PizzaList = pizzaList;
 	}
@@ -123,53 +130,41 @@ public class Order
 	public ArrayList<Discount> getDiscountList() {
 		return DiscountList;
 	}
+
 	public void setDiscountList(ArrayList<Discount> discountList) {
 		DiscountList = discountList;
 	}
 
 
-	
 	//two print statements because one is slightly easier to read. If you can make pretty print statements, you're absolutely welcome to change these.
 	@Override
 	public String toString() {
-		try 
-		{
+		try {
 			return "OrderID=" + OrderID +
 					"\nDate Placed = " + this.Date +
 					"\nCustomer = " + DBNinja.getCustomerName(CustID) +
 					"\nOrderType = " + OrderType +
 					"\nPrice = " + Price +
 					"\nCost = " + Cost;
-		} 
-		catch (SQLException | IOException e)
-		{
+		} catch (SQLException | IOException e) {
 			e.printStackTrace();
 			return "ERROR IN PRINT CUSTOMER";
 		}
 	}
 
-	public String toSimplePrint() 
-	{
-		try 
-		{
+	public String toSimplePrint() {
+		try {
 			return "OrderID = " + OrderID +
 					"\nDate Placed = " + this.Date +
 					"\nCustomer name = " + DBNinja.getCustomerName(CustID) +
 					"\nOrderType = " + OrderType +
 					"\nIsComplete = " + isComplete;
-		}
-		catch (SQLException e) {
+		} catch (SQLException e) {
 			e.printStackTrace();
 			return "ERROR IN SIMPLE PRINT CUSTOMER";
-		} 
-		catch (IOException e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 			return "ERROR IN SIMPLE PRINT CUSTOMER";
 		}
 	}
-
-	
-	
-	
-	
 }
