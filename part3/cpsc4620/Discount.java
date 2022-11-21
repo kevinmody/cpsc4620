@@ -1,21 +1,22 @@
 package cpsc4620;
 
-public class Discount {
-
+public class Discount 
+{
+	
 	/*
-	 *
-	 * Standard Java object class.
-	 *
+	 * 
+	 * Standard Java object class. 
+	 * 
 	 * This file can be modified to match your design, or you can keep it as-is.
-	 *
-	 *
+	 * 
+	 * 
 	 * */
-
+	
 	private int DiscountID;
 	private String DiscountName;
 	private double Amount;
 	private boolean isPercent;
-
+	
 	public Discount(int discountID, String discountName, double amount, boolean isPercent) {
 		DiscountID = discountID;
 		DiscountName = discountName;
@@ -27,28 +28,28 @@ public class Discount {
 		return DiscountID;
 	}
 
-	public void setDiscountID(int discountID) {
-		DiscountID = discountID;
-	}
-
 	public String getDiscountName() {
 		return DiscountName;
-	}
-
-	public void setDiscountName(String discountName) {
-		DiscountName = discountName;
 	}
 
 	public double getAmount() {
 		return Amount;
 	}
 
-	public void setAmount(double amount) {
-		Amount = amount;
-	}
-
 	public boolean isPercent() {
 		return isPercent;
+	}
+
+	public void setDiscountID(int discountID) {
+		DiscountID = discountID;
+	}
+
+	public void setDiscountName(String discountName) {
+		DiscountName = discountName;
+	}
+
+	public void setAmount(double amount) {
+		Amount = amount;
 	}
 
 	public void setPercent(boolean isPercent) {
@@ -57,8 +58,8 @@ public class Discount {
 
 	@Override
 	public String toString() {
-		return "DiscountID = " + DiscountID + " | " + DiscountName + "" +
-				"\nAmount = " + Amount +
-				"\nisPercent = " + isPercent;
+		return "DiscountID=" + DiscountID + " | " + DiscountName + ", Amount= " + Amount
+				+ ", isPercent= " + isPercent;
 	}
+	
 }

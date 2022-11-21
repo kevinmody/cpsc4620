@@ -32,17 +32,17 @@ public final class DBNinja {
 	// crusts
 	public final static String pickup = "Pickup";
 	public final static String delivery = "Delivery";
-	public final static String dine_in = "Dine-in";
+	public final static String dine_in = "DineIn";
 
-	public final static String size_s = "Small";
-	public final static String size_m = "Medium";
-	public final static String size_l = "Large";
-	public final static String size_xl = "XLarge";
+	public final static int size_s = 1;
+	public final static int size_m = 2;
+	public final static int size_l = 3;
+	public final static int size_xl = 4;
 
-	public final static String crust_thin = "Thin";
-	public final static String crust_orig = "Original";
-	public final static String crust_pan = "Pan";
-	public final static String crust_gf = "Gluten-Free";
+	public final static int crust_thin = 1;
+	public final static int crust_orig = 2;
+	public final static int crust_pan = 3;
+	public final static int crust_gf = 4;
 
 	/**
 	 * This function will handle the connection to the database
@@ -82,11 +82,76 @@ public final class DBNinja {
 		 * adding the order to the order DB table, but we're also recording
 		 * the necessary data for the delivery, dinein, and pickup tables
 		 */
-	
+		String maxID = "select max(CustomerOrderID) from customerOrder";
+		String order = "insert into customerOrder(CustomerOrderID, CustomerOrderType, CustomerOrderTimeStamp, CustomerOrderTotalprice, CustomerOrderTotalcost) values (?, ?, (STR_TO_DATE(?, '%Y-%m-%d %H:%i')), ?, ?);";
+		String dineIn_stmt = "insert into dineIn(DineInCustomerOrderID, DineInTableNumber) values (?, ?);";
+		String pickUp_stmt = "insert into pickup(PickupCustomerOrderID, PickupCustomerID, PickupTimestamp) values(?, ?, (STR_TO_DATE(?, '%Y-%m-%d %H:%i')));";
+		String delivery_stmt = "insert into delivery(DeliveryCustomerOrderID, DeliveryCustomerID, DeliveryStreet, DeliveryCity, DeliveryState, DeliveryZip) values (?, ?, ?, ?, ?, ?)";
+		PreparedStatement prepStatement;
 
-		
+		try{
+
+			prepStatement = conn.prepareStatement(maxID);
+			ResultSet returnValue = prepStatement.executeQuery();
+			int newID = -1;
+			while(returnValue.next()){
+				newID = returnValue.getInt(1);
+			}
+
+			prepStatement = conn.prepareStatement(order);
+			prepStatement.setInt(1, newID);
+			prepStatement.setString(2, o.getOrderType());
+			prepStatement.setString(3, o.getDate());
+			prepStatement.setDouble(4, o.getPrice());
+			prepStatement.setDouble(5, o.getCost());
+			int flag = prepStatement.executeUpdate();
+			if(flag == 0) {
+				System.out.println("Error adding order");
+			}
+
+			if(o instanceof DineinOrder){
+				prepStatement = conn.prepareStatement(dineIn_stmt);
+				prepStatement.setInt(1, newID);
+				prepStatement.setInt(2, ((DineinOrder) o).getTableNum() );
+			}
+			else if(o instanceof PickupOrder){
+				prepStatement = conn.prepareStatement(pickUp_stmt);
+				prepStatement.setInt(1, newID);
+				prepStatement.setInt(2, ((PickupOrder) o).getCustID() );
+				prepStatement.setString(3, ((PickupOrder) o).getPick);
+			}
+			else {//if(o instanceof DineinOrder){
+				prepStatement = conn.prepareStatement(delivery_stmt);
+				prepStatement.setInt(1, newID);
+				prepStatement.setInt(2, ((DineinOrder) o).getTableNum() );
+			}
+
+			/*
+
+			if(o.getOrderType().equals(dine_in)){
+				prepStatement = conn.prepareStatement(dineIn_stmt);
+				prepStatement.setInt(1, newID);
+				prepStatement.setInt(2, );
+			}
+
+			 */
+
+
+
+
+
+		}
+		catch (SQLException e) {
+			System.out.println("Error adding Order");
+			while (e != null) {
+				System.out.println("Message     : " + e.getMessage());
+				e = e.getNextException();
+			}
+		}
+
+
+
 		//DO NOT FORGET TO CLOSE YOUR CONNECTION
-		conn.close();
 	}
 	
 	public static void addPizza(Pizza p) throws SQLException, IOException
@@ -104,8 +169,6 @@ public final class DBNinja {
 		
 		
 		//DO NOT FORGET TO CLOSE YOUR CONNECTION
-		conn.close();
-		
 	}
 	
 	public static int getMaxPizzaID() throws SQLException, IOException
@@ -122,13 +185,11 @@ public final class DBNinja {
 		
 		
 		//DO NOT FORGET TO CLOSE YOUR CONNECTION
-		conn.close();
 		return -1;
 	}
-
-
-	//this function will update toppings inventory in SQL and add entities to the Pizzatops table. Pass in the p pizza that is using t topping
-	public static void useTopping(Pizza p, Topping t, boolean isDoubled) throws SQLException, IOException {
+	
+	public static void useTopping(Pizza p, Topping t, boolean isDoubled) throws SQLException, IOException //this function will update toppings inventory in SQL and add entities to the Pizzatops table. Pass in the p pizza that is using t topping
+	{
 		connect_to_db();
 		/*
 		 * This function should 2 two things.
@@ -145,7 +206,6 @@ public final class DBNinja {
 		
 		
 		//DO NOT FORGET TO CLOSE YOUR CONNECTION
-		conn.close();
 	}
 	
 	
@@ -163,7 +223,6 @@ public final class DBNinja {
 		
 		
 		//DO NOT FORGET TO CLOSE YOUR CONNECTION
-		conn.close();
 	}
 	
 	public static void useOrderDiscount(Order o, Discount d) throws SQLException, IOException
@@ -180,7 +239,6 @@ public final class DBNinja {
 		
 		
 		//DO NOT FORGET TO CLOSE YOUR CONNECTION
-		conn.close();
 	}
 	
 
@@ -197,7 +255,6 @@ public final class DBNinja {
 		
 		
 		//DO NOT FORGET TO CLOSE YOUR CONNECTION
-		conn.close();
 	}
 
 
@@ -217,7 +274,6 @@ public final class DBNinja {
 		
 		
 		//DO NOT FORGET TO CLOSE YOUR CONNECTION
-		conn.close();
 	}
 
 
@@ -236,7 +292,6 @@ public final class DBNinja {
 		
 		
 		//DO NOT FORGET TO CLOSE YOUR CONNECTION
-		conn.close();
 	}
 
 	
@@ -261,8 +316,7 @@ public final class DBNinja {
 		
 		
 		
-		//DO NOT FORGET TO CLOSE YOUR CONNECTION
-		conn.close();		
+		//DO NOT FORGET TO CLOSE YOUR CONNECTION		
 	}
 	
 	
@@ -282,7 +336,6 @@ public final class DBNinja {
 		
 		
 		//DO NOT FORGET TO CLOSE YOUR CONNECTION
-		conn.close();
 		return null;
 	}
 
@@ -303,7 +356,6 @@ public final class DBNinja {
 
 		
 		//DO NOT FORGET TO CLOSE YOUR CONNECTION
-		conn.close();
 		return null;
 	}
 	
@@ -376,7 +428,6 @@ public final class DBNinja {
 		
 		
 		//DO NOT FORGET TO CLOSE YOUR CONNECTION
-		conn.close();
 		return bp;
 	}
 	
@@ -413,7 +464,6 @@ public final class DBNinja {
 		
 		
 		//DO NOT FORGET TO CLOSE YOUR CONNECTION
-		conn.close();
 		return bp;
 	}
 
@@ -431,7 +481,6 @@ public final class DBNinja {
 		
 		
 		//DO NOT FORGET TO CLOSE YOUR CONNECTION
-		conn.close();
 		return discs;
 	}
 
@@ -451,7 +500,6 @@ public final class DBNinja {
 		
 		
 		//DO NOT FORGET TO CLOSE YOUR CONNECTION
-		conn.close();
 		return custs;
 	}
 	
@@ -469,7 +517,6 @@ public final class DBNinja {
 		
 		
 		//DO NOT FORGET TO CLOSE YOUR CONNECTION
-		conn.close();
 		return -1;
 	}
 	
@@ -492,7 +539,6 @@ public final class DBNinja {
 		
 		
 		//DO NOT FORGET TO CLOSE YOUR CONNECTION
-		conn.close();
 	}
 	
 	public static void printProfitByPizzaReport() throws SQLException, IOException
@@ -511,7 +557,6 @@ public final class DBNinja {
 		
 		
 		//DO NOT FORGET TO CLOSE YOUR CONNECTION
-		conn.close();
 	}
 	
 	public static void printProfitByOrderType() throws SQLException, IOException
@@ -531,8 +576,7 @@ public final class DBNinja {
 		
 		
 		
-		//DO NOT FORGET TO CLOSE YOUR CONNECTION
-		conn.close();	
+		//DO NOT FORGET TO CLOSE YOUR CONNECTION	
 	}
 	
 	

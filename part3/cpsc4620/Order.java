@@ -86,6 +86,7 @@ public class Order {
 		return Date;
 	}
 
+	// Parm date format must be "2013-12-31 20:30"
 	public void setDate(String date) {
 		Date = date;
 	}
