@@ -139,7 +139,31 @@ public class Menu {
 		 * 
 		 * Once you get the name and phone number (and anything else your design might have) add it to the DB
 		 */
+		System.out.println("Please Enter the Customer name: ");
+		BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+		String name = reader.readLine();
+		System.out.println("Is this a customer who wants delivery? Enter Y/N");
+		String option = reader.readLine();
+		String address = "";
+		if(option.equals("y") || option.equals("Y"))
+		{
+			System.out.println("Please enter the address: ");
+			address = reader.readLine();
+		}
+		System.out.println("Please Enter the Customer phone number: ");
+		String phone = reader.readLine();
 
+		ICustomer new_cust;
+
+		if(address != "")
+		{
+			new_cust = new DeliveryCustomer(-1, name, phone, address);
+		}
+		else
+		{
+			new_cust = new DineOutCustomer(-1, name, phone);
+		}
+		DBNinja.addCustomer(new_cust);
 
 
 	}
@@ -297,8 +321,82 @@ public class Menu {
 		}
 
 		//get the base price ??
+		double base_price = DBNinja.getBasePrice(size, crust);
 
-		return ret;
+		Pizza newPizza = new Pizza(-1, size, crust, base_price);
+
+		//add toppings to the pizza
+		int chosen_t = 0;
+		ArrayList<Topping> curInventory = DBNinja.getInventory();
+		while(chosen_t != -1)
+		{
+
+			int t_count = 1;
+			for(Topping t : curInventory)
+			{
+				System.out.println(Integer.toString(t_count) + ": " + t.getName() + " Level: " + Double.toString(t.getInv()));
+				t_count++;
+			}
+
+			System.out.println("Which topping do you want to add? Enter the number. Enter -1 to stop adding toppings: ");
+
+			chosen_t = Integer.parseInt(reader.readLine());
+			if (chosen_t != -1)
+			{
+				if(chosen_t <= curInventory.size())
+				{
+					//make copy to avoid aliasing issues
+					Topping newT = new Topping(curInventory.get(chosen_t - 1).getName(), curInventory.get(chosen_t - 1).getPrice(), curInventory.get(chosen_t - 1).getInv(), curInventory.get(chosen_t - 1).getID());
+					System.out.println("Would you like to add extra of this topping? Enter Y for yes: ");
+					String yn = reader.readLine();
+					if(yn.equals("Y") || yn.equals("y"))
+					{
+						newT.makeExtra();
+					}
+					newPizza.addTopping(newT);
+				}
+				else
+				{
+					System.out.println("Incorrect entry, not an option");
+				}
+			}
+		}
+		System.out.println("Should any discounts be added for this pizza? Enter Y or N: ");
+		String yn = reader.readLine();
+		if(yn.equals("Y") || yn.equals("y"))
+		{
+			// add discounts
+			int chosen_d = 0;
+			ArrayList<Discount> discs = DBNinja.getDiscountList();
+			while(chosen_d != -1)
+			{
+				int d_count = 1;
+				for (Discount d: discs)
+				{
+					System.out.println(Integer.toString(d_count) + ".) " + d.toString());
+					d_count++;
+				}
+
+				System.out.println("Which discount do you want to add? Enter the number. Enter -1 to stop adding discounts: ");
+
+				chosen_d = Integer.parseInt(reader.readLine());
+				if (chosen_d != -1)
+				{
+					if(chosen_d <= discs.size())
+					{
+						//make copy to avoid aliasing issues
+						Discount newD = new Discount(discs.get(chosen_d-1).getName(), discs.get(chosen_d-1).getPercentDisc(), discs.get(chosen_d-1).getCashDisc(), discs.get(chosen_d-1).getID());
+						newPizza.addDiscount(newD);
+					}
+					else
+					{
+						System.out.println("Incorrect entry, not an option");
+					}
+				}
+			}
+
+		}
+		return newPizza;
 	}
 		
 		
