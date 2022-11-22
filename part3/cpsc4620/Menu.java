@@ -266,10 +266,12 @@ public class Menu {
 		 */
 		BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 		Pizza ret = null;
+
+
 		//select size
 		System.out.println("What size is the pizza? \n1.) Small \n2.) Medium\n3.) Large\n4.) X-Large \n Enter the corresponding number: ");
 		int size_option = Integer.parseInt(reader.readLine());
-		String size = "";
+		int size = -1;
 		if (size_option == 1) {
 			size = DBNinja.size_s;
 		} else if (size_option == 2) {
@@ -283,7 +285,7 @@ public class Menu {
 		//select crust
 		System.out.println("What crust for this pizza? \n1.) Thin \n2.) Original\n3.) Pan\n4.) Gluten-Free \n Enter the corresponding number: ");
 		int c_option = Integer.parseInt(reader.readLine());
-		String crust = "";
+		int crust = -1;
 		if (c_option == 1) {
 			crust = DBNinja.crust_thin;
 		} else if (c_option == 2) {

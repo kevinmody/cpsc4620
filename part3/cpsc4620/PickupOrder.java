@@ -31,6 +31,14 @@ public class PickupOrder extends Order {
 		this.isPickedUp = isPickedUp;
 	}
 
+	public String getPickupTime() {
+		return pickupTime;
+	}
+
+	public void setPickupTime(String pickupTime) {
+		this.pickupTime = pickupTime;
+	}
+
 	@Override
 	public String toString() {
 		return super.toString() + " | is the order picked up? (yes=1): " + isPickedUp;

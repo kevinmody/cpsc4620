@@ -110,20 +110,28 @@ public final class DBNinja {
 			}
 
 			if(o instanceof DineinOrder){
+				// "insert into dineIn(DineInCustomerOrderID, DineInTableNumber) values (?, ?);"
 				prepStatement = conn.prepareStatement(dineIn_stmt);
 				prepStatement.setInt(1, newID);
 				prepStatement.setInt(2, ((DineinOrder) o).getTableNum() );
 			}
 			else if(o instanceof PickupOrder){
+				// "insert into pickup(PickupCustomerOrderID, PickupCustomerID, PickupTimestamp) values(?, ?, (STR_TO_DATE(?, '%Y-%m-%d %H:%i')))"
 				prepStatement = conn.prepareStatement(pickUp_stmt);
 				prepStatement.setInt(1, newID);
 				prepStatement.setInt(2, ((PickupOrder) o).getCustID() );
-				prepStatement.setString(3, ((PickupOrder) o).getPick);
+				prepStatement.setString(3, ((PickupOrder) o).getPickupTime());
 			}
 			else {//if(o instanceof DineinOrder){
+				// "insert into delivery(DeliveryCustomerOrderID, DeliveryCustomerID, DeliveryStreet, DeliveryCity, DeliveryState, DeliveryZip) values (?, ?, ?, ?, ?, ?)"
 				prepStatement = conn.prepareStatement(delivery_stmt);
 				prepStatement.setInt(1, newID);
-				prepStatement.setInt(2, ((DineinOrder) o).getTableNum() );
+				prepStatement.setInt(2, ((DeliveryOrder) o).getCustID() );
+				prepStatement.setString(3, ((DineinOrder) o).getS);
+				prepStatement.setString(4, newID);
+				prepStatement.setString(5, newID);
+				prepStatement.setInt(6, newID);
+
 			}
 
 			/*

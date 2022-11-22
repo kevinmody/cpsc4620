@@ -14,26 +14,59 @@ public class DeliveryOrder extends Order
 	 *
 	 * 
 	 * */
+
+	private String street;
+	private String city;
+	private String state;
+	private int zip;
 	
-	private String Address;
-	
-	public DeliveryOrder(int orderID, int custID, String date, double custPrice, double busPrice, int isComplete, String address) 
+	public DeliveryOrder(int orderID, int custID, String date, double custPrice, double busPrice, int isComplete,
+						 String street, String city, String state, int zip)
 	{
 		super(orderID, custID, DBNinja.delivery, date, custPrice, busPrice, isComplete);
-		this.Address = address;
+		this.street = street;
+		this.city = city;
+		this.state = state;
+		this.zip = zip;
+
 	}
 
-	public String getAddress() {
-		return Address;
+	public void setStreet(String street) {
+		this.street = street;
 	}
 
-	public void setAddress(String address) {
-		Address = address;
+	public String getStreet() {
+		return street;
+	}
+
+	public void setCity(String city) {
+		this.city = city;
+	}
+
+	public String getCity() {
+		return city;
+	}
+
+	public void setState(String state) {
+		this.state = state;
+	}
+
+	public String getState() {
+		return state;
+	}
+
+	public void setZip(int zip) {
+		this.zip = zip;
+	}
+
+	public int getZip() {
+		return zip;
 	}
 
 	@Override
 	public String toString() {
-		return super.toString() + " | Delivered to: " + Address;
+		return super.toString() +
+				"\nDelivered to: " + street + ", " + city + ", " + state + ", " + zip + ".";
 	}
 	
 	
