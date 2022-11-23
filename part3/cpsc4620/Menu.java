@@ -90,7 +90,7 @@ public class Menu {
 	// allow for a new order to be placed
 	public static void EnterOrder() throws SQLException, IOException 
 	{
-		BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+		//BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 		/*
 		 * EnterOrder should do the following:
 		 * Ask if the order is for an existing customer -> If yes, select the customer. If no -> create the customer (as if the menu option 2 was selected).
@@ -107,6 +107,122 @@ public class Menu {
 		 * 
 		 * return to menu
 		 */
+		Customer customer;
+		boolean customer_found = false;
+		Scanner reader = new Scanner(System.in);
+		while (!customer_found) {
+			System.out.println("Are You an Existing Customer or a New Customer?");
+			System.out.println("1. Existing Customer");
+			System.out.println("2. New Customer");
+			System.out.println("Enter the Corresponding Number.");
+			String newcustomer = reader.nextLine();
+			ArrayList<Customer> customer_list;
+			switch(newcustomer) {
+				//Existing Customer
+				case "1":
+					boolean customer_number_found = false;
+					customer_list = getCustomerList();
+					while (!customer_number_found) {
+						System.out.println("List of Customers:");
+						viewCustomers();
+						System.out.println("Enter Your Customer ID");
+						String CustID = reader.nextLine();
+						//check if customer exists
+						for (Customer cus: customer_list) {
+							if (cus.getCustID() == CustID) {
+								customer = cus;
+							}
+							customer_number_found = true;
+							break;
+						}
+						if (!customer_number_found) {
+							System.out.println("Invalid Selection. Try Again.");
+						}
+					}
+					break;
+
+				//New Customer
+				case "2":
+					customer = EnterCustomer();
+					customer_list = getCustomerList();
+					boolean customer_info_found = false;
+					for(Customer cus: customer_list) {
+						if (cus.getPhone() == customer.getPhone()) {
+							customer = cus;
+							customer_found = true;
+						}
+					}
+					break;
+				default:
+					System.out.println("Invalid Selection. Try Again.");
+			}
+		}
+
+		//Setting up an order
+
+		System.out.println("What Type of Order is This?");
+		boolean got_order_type = false;
+		Order order;
+		while (!got_order_type) {
+			System.out.println("1. Dine-in");
+			System.out.println("2. Pickup");
+			System.out.println("3. Delivery");
+			System.out.println("Enter the Corresponding Number.");
+			String order_type = reader.nextLine();
+			SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+			Date date = new Date();
+			date = formatter.format(date);
+			switch (order_type) {
+				case "1":
+					order = new DineinOrder(null, customer.getCustID(), date,  null, null, 0, null);
+					got_order_type = true;
+					break;
+				case "2":
+					order = new PickupOrder(null, customer.getCustID(), date, null, null, 0, 0);
+					got_order_type = true;
+					break;
+				case "3":
+					String address;
+					System.out.println("What Is The Address for This Delivery?");
+					while ((address = reader.nextLine()) == null) {
+						System.out.println("What Is The Address for This Delivery?");
+					}
+					order = new DeliveryOrder(null, customer.getCustID(), date, null, null, 0, address);
+					got_order_type = true;
+					customer.setAddress(address);
+			}
+		}
+
+
+		//creating a pizza
+		ArrayList<Pizza> pizza_list;
+		boolean all_pizza_added = false;
+		while(!all_pizza_added) {
+			pizza_list.add(buildPizza())
+
+			boolean add_another_answer = false;
+			while (!add_another_pizza) {
+				System.out.println("Would You Like To Add Another Pizza?");
+				System.out.println("1. Yes");
+				System.out.println("2. No");
+				System.out.println("Enter the Corresponding Number.");
+				response = reader.nextLine();
+				switch (response) {
+					case "1":
+						add_another_answer = true;
+						break;
+					case "2":
+						add_another_answer = true;
+						all_pizza_added = true;
+						break;
+					default:
+						System.out.println("Invalid Selection. Try Again.");
+				}
+			}
+		}
+		System.out.println("Finished adding order...Returning to menu...");
+		reader.close();
+	}
 
 	}
 	
