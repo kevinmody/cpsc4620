@@ -582,8 +582,8 @@ public final class DBNinja {
 			String selectInv_stmt = "select ToppingID, ToppingName, ToppingCost, ToppingPrice, ToppingCurrentInventory, ToppingMinInventory, ToppingStaticCounter from topping order by ToppingID;";
 			String topUnits_stmt = "select BaseToppingUnit from baseTopping where BaseToppingToppingID = ? order by BaseToppingSizeID;";
 
-			PreparedStatement prepStatement = conn.prepareStatement(selectInv_stmt);
-			ResultSet queryReturn = prepStatement.executeQuery();
+			PreparedStatement prep_selInv = conn.prepareStatement(selectInv_stmt);
+			ResultSet queryReturn = prep_selInv.executeQuery();
 			ResultSet topUnit;
 
 			while (queryReturn.next()) {
@@ -598,9 +598,9 @@ public final class DBNinja {
 				ArrayList<Double> unitSize = new ArrayList<>();
 
 
-
-				prepStatement.setInt(1, topID);
-				topUnit = prepStatement.executeQuery();
+				PreparedStatement topUnit_prep = conn.prepareStatement(topUnits_stmt);
+				topUnit_prep.setInt(1, topID);
+				topUnit = topUnit_prep.executeQuery();
 				while (topUnit.next()) {
 					unitSize.add(topUnit.getDouble(1));
 				}
