@@ -483,7 +483,7 @@ public class Menu {
 		//add toppings to the pizza
 		int chosen_t = 0;
 		ArrayList<Topping> curInventory = DBNinja.getInventory();
-		ArrayList<Topping> currPizzaTopping = new ArrayList<>();
+		//ArrayList<Topping> currPizzaTopping = new ArrayList<>();
 		while (chosen_t != -1) {
 			for (Topping t : curInventory) {
 				System.out.println(t.getTopID() + " - " + t.getTopName());
@@ -492,13 +492,13 @@ public class Menu {
 			chosen_t = Integer.parseInt(reader.nextLine());
 
 			if (chosen_t != -1) {
-				if (chosen_t <= curInventory.size()) {
+				if (chosen_t > 0 && chosen_t <= curInventory.size()) {
 					//make copy to avoid aliasing issues
-					System.out.println("Would you like to add extra of this topping? Enter Y for yes: ");
+					System.out.println("Would you like to add extra of this topping? (Y/N) : ");
 					String yn = reader.nextLine().toLowerCase(Locale.ROOT);
 					boolean isExtra = yn.equals("y");
 
-					newPizza.addToppings(currPizzaTopping.get(chosen_t - 1), isExtra);
+					newPizza.addToppings(curInventory.get(chosen_t - 1), isExtra);
 
 				} else {
 					System.out.println("Incorrect entry, not an option");
@@ -521,7 +521,7 @@ public class Menu {
 
 				chosen_d = Integer.parseInt(reader.nextLine());
 				if (chosen_d != -1) {
-					if (chosen_d <= discs.size()) {
+					if (chosen_d > 0 && chosen_d <= discs.size()) {
 						newPizza.addDiscounts(discs.get(chosen_d - 1));
 					} else {
 						System.out.println("Incorrect entry, not an option");
