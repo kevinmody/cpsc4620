@@ -65,7 +65,8 @@ create table customerOrder (
     CustomerOrderType varchar(255) not null check(CustomerOrderType in ("DineIn", "Pickup", "Delivery")),
     CustomerOrderTimeStamp timestamp not null,
     CustomerOrderTotalCost double(8,2) not null default 0.0,
-    CustomerOrderTotalPrice double(8,2) not null default 0.0
+    CustomerOrderTotalPrice double(8,2) not null default 0.0,
+	CustomerOrderIsComplete boolean not null default false
 );
 create table dineIn (
 	DineInCustomerOrderID integer not null primary key,
