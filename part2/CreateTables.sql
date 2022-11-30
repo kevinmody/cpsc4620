@@ -60,6 +60,8 @@ create table discount (
 
 create table customerOrder (
 	CustomerOrderID integer not null primary key auto_increment, 
+	CustomerOrderCustomerID integer not null,
+	foreign key (CustomerOrderCustomerID) references customer(CustomerID),
     CustomerOrderType varchar(255) not null check(CustomerOrderType in ("DineIn", "Pickup", "Delivery")),
     CustomerOrderTimeStamp timestamp not null,
     CustomerOrderTotalCost double(8,2) not null default 0.0,
@@ -73,15 +75,11 @@ create table dineIn (
 create table pickup (
 	PickupCustomerOrderID integer not null primary key,
     foreign key (PickupCustomerOrderID) references customerOrder(CustomerOrderID),
-    PickupCustomerID integer not null,
-    foreign key (PickupCustomerID) references customer(CustomerID),
     PickupTimestamp timestamp not null
 );
 create table delivery (
 	DeliveryCustomerOrderID integer not null primary key,
     foreign key (DeliveryCustomerOrderID) references customerOrder(CustomerOrderID),
-    DeliveryCustomerID integer not null,
-    foreign key (DeliveryCustomerID) references customer(CustomerID),
     DeliveryStreet varchar(255) not null,
     DeliveryCity varchar(255) not null,
     DeliveryState varchar(2) not null,
