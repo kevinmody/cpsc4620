@@ -68,8 +68,9 @@ public class Menu {
 					break;
 			}
 			PrintMenu();
-			option = reader.nextLine();
-			menu_option = Integer.parseInt(option);
+			//option = reader.nextLine();
+			//menu_option = Integer.parseInt(option);
+			menu_option = Integer.parseInt(reader.nextLine());
 		}
 
 	}
