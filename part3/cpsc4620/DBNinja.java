@@ -638,7 +638,7 @@ public final class DBNinja {
 
 		try {
 
-			String selectInv_stmt = "select CustomerOrderID, CustomerOrderType, CustomerOrderTimeStamp, CustomerOrderTotalCost, CustomerOrderTotalPrice from customerOrder order by CustomerOrderTimeStamp desc;";
+			String selectInv_stmt = "select CustomerOrderID, CustomerOrderType, CustomerOrderTimeStamp, CustomerOrderTotalCost, CustomerOrderTotalPrice, CustomerOrderCustomerID, CustomerOrderIsComplete from customerOrder order by CustomerOrderTimeStamp desc;";
 			PreparedStatement prepStatement = conn.prepareStatement(selectInv_stmt);
 			ResultSet queryReturn = prepStatement.executeQuery();
 
@@ -648,9 +648,11 @@ public final class DBNinja {
 				String time = queryReturn.getTimestamp(3).toString();
 				Double totalCost = queryReturn.getDouble(4);
 				Double totalPrice = queryReturn.getDouble(5);
+				int custID = queryReturn.getInt(6);
+				Boolean isComp = queryReturn.getBoolean(7);
 
-				allOrders.add(new Order(orderID, orderType, time, totalPrice, totalCost));
-
+				//allOrders.add(new Order(orderID, orderType, time, totalPrice, totalCost));
+				allOrders.add(new Order(orderID, custID, orderType, time, totalPrice, totalCost, isComp));
 			}
 
 		} catch (SQLException e) {

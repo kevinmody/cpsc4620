@@ -20,14 +20,14 @@ public class Order {
 	private String Date;
 	private double Price;
 	private double Cost;
-	private int isComplete;
+	private Boolean isComplete;
 
 	//notice that these are not part of the ERD design, but we need a way to associate pizzas and discounts with a specific order
 	private ArrayList<Pizza> PizzaList;
 	private ArrayList<Discount> DiscountList;
 
 
-	public Order(int orderID, int custID, String orderType, String date, double price, double cost, int iscomplete) {
+	public Order(int orderID, int custID, String orderType, String date, double price, double cost, Boolean iscomplete) {
 		OrderID = orderID;
 		CustID = custID;
 		OrderType = orderType;
@@ -56,7 +56,7 @@ public class Order {
 		Date = null;
 		Price = -1;
 		Cost = -1;
-		isComplete = -1;
+		isComplete = false;
 		PizzaList = new ArrayList<Pizza>();
 		DiscountList = new ArrayList<Discount>();
     }
@@ -132,11 +132,11 @@ public class Order {
 	}
 
 
-	public int getIsComplete() {
+	public Boolean getIsComplete() {
 		return isComplete;
 	}
 
-	public void setIsComplete(int iscomplete) {
+	public void setIsComplete(Boolean iscomplete) {
 		this.isComplete = iscomplete;
 	}
 
@@ -178,10 +178,10 @@ public class Order {
 	public String toSimplePrint() {
 		try {
 			return "OrderID = " + OrderID +
-					"\nDate Placed = " + this.Date +
-					"\nCustomer name = " + DBNinja.getCustomerName(CustID) +
-					"\nOrderType = " + OrderType +
-					"\nIsComplete = " + isComplete;
+					"\tDate Placed = " + this.Date +
+					"\tCustomer name = " + DBNinja.getCustomerName(CustID) +
+					"\tOrderType = " + OrderType +
+					"\tIsComplete = " + isComplete;
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return "ERROR IN SIMPLE PRINT CUSTOMER";
