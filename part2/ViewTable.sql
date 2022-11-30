@@ -9,7 +9,7 @@ select * from pickup;
 select * from customerOrder;
 select * from discount; 
 select * from customer;
-select * from baseTopping where BaseToppingToppingID = 2 order by BaseToppingSizeID;
+select * from baseTopping;
 select * from topping;
 select * from baseCost;
 select * from size;

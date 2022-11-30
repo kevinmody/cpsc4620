@@ -60,7 +60,7 @@ create table discount (
 
 create table customerOrder (
 	CustomerOrderID integer not null primary key auto_increment, 
-	CustomerOrderCustomerID integer not null,
+	CustomerOrderCustomerID integer not null default 0,
 	foreign key (CustomerOrderCustomerID) references customer(CustomerID),
     CustomerOrderType varchar(255) not null check(CustomerOrderType in ("DineIn", "Pickup", "Delivery")),
     CustomerOrderTimeStamp timestamp not null,
@@ -96,7 +96,7 @@ create table pizza(
     foreign key (PizzaSizeID) references baseCost(BaseCostSizeId),
     foreign key (PizzaOrderID) references customerOrder(CustomerOrderID), 
     
-    PizzaState varchar(255) not null,
+    PizzaState varchar(255) not null check (PizzaState in ("Complete", "Not-Complete")),
     PizzaTotalCost double(8,2) not null,
     PizzaTotalPrice double(8,2) not null
 );
@@ -125,4 +125,91 @@ create table pizzaDiscount (
     foreign key (PizzaDiscountDiscountID) references discount(DiscountID),
     foreign key (PizzaDiscountPizzaID) references pizza(PizzaID)
 );
+
+
+
+drop procedure if exists updateCustomerOrder;
+delimiter !
+create procedure updateCustomerOrder (IN oID integer)
+begin
+	declare max_pID integer default 0;
+    declare min_pID integer default 0;
+    declare discount_value decimal(8,2) default 0.0;
+    declare discount_percent decimal(8,2) default 0.0;
+    
+    select max(PizzaID) from pizza where PizzaOrderID = oID into max_pID;
+    select min(PizzaID) from pizza where PizzaOrderID = oID into min_pID;
+
+	update customerOrder
+	set CustomerOrderTotalCost = cast((select sum(PizzaTotalCost) from pizza where PizzaOrderID = oID) as decimal(8,2))
+    where CustomerOrderID = oID;
+    -- CustomerOrderTotalPrice = cast((select sum(PizzaTotalPrice) from pizza where PizzaOrderID = oID) as decimal(8,2))
+    
+    while min_pID <= max_pID do
+		
+        select d.DiscountValue
+		from pizzaDiscount as pd
+		inner join pizza as p on pd.PizzaDiscountPizzaID = p.PizzaID
+		inner join customerOrder as co on p.PizzaOrderID = co.CustomerOrderID
+		inner join discount as d on pd.PizzaDiscountDiscountID = d.DiscountID
+		where PizzaID = min_pID and CustomerOrderID = oID and d.DiscountIsPercent = FALSE
+        into discount_value;
+        
+        select d.DiscountValue
+		from pizzaDiscount as pd
+		inner join pizza as p on pd.PizzaDiscountPizzaID = p.PizzaID
+		inner join customerOrder as co on p.PizzaOrderID = co.CustomerOrderID
+		inner join discount as d on pd.PizzaDiscountDiscountID = d.DiscountID
+		where PizzaID = min_pID and CustomerOrderID = oID and d.DiscountIsPercent = TRUE
+        into discount_percent;
+        
+		update customerOrder
+		set CustomerOrderTotalPrice = case
+        when discount_value is not null then
+			CustomerOrderTotalPrice + cast((select PizzaTotalPrice from pizza where PizzaOrderID = oID and PizzaID = min_pID) as decimal(8,2)) - discount_value
+		when discount_percent is not null then
+			CustomerOrderTotalPrice + cast((select PizzaTotalPrice from pizza where PizzaOrderID = oID and PizzaID = min_pID) as decimal(8,2)) * (1.00 - (discount_percent/100.00))
+		end
+        where CustomerOrderID = oID;
+        
+        set min_pID = min_pID + 1;
+	end while;
+    
+	
+end !
+delimiter ;
+
+
+drop procedure if exists applyDiscount;
+delimiter !
+create procedure applyDiscount (IN oID integer)
+begin
+	set @order_non_percent_discount = cast((select sum(d.DiscountValue) from orderDiscount as od
+										inner join discount as d on d.DiscountID = od.OrderDiscountDiscountID 
+										where od.OrderDiscountOrderID = oID AND d.DiscountIsPercent = FALSE) as decimal(8,2));
+	set @order_percent_discount = cast((select sum(d.DiscountValue) from orderDiscount as od
+										inner join discount as d on d.DiscountID = od.OrderDiscountDiscountID 
+										where od.OrderDiscountOrderID = oID AND d.DiscountIsPercent = TRUE) as decimal(8,2));
+	update customerOrder
+    set CustomerOrderTotalPrice = case
+        when @order_non_percent_discount is not null then CustomerOrderTotalPrice - @order_non_percent_discount
+		else CustomerOrderTotalPrice
+		end,
+	
+	CustomerOrderTotalPrice = case
+        when @order_percent_discount is not null then CustomerOrderTotalPrice * (1.00-(@order_percent_discount/100.00))
+		else CustomerOrderTotalPrice
+		end
+        
+	/*
+    set CustomerOrderTotalprice = case
+        when order_non_percent_discount is not null then CustomerOrderTotalprice - order_non_percent_discount
+        when order_percent_discount is not null then CustomerOrderTotalprice * (1.00-(order_percent_discount/100.00))
+		else CustomerOrderTotalprice
+		end;
+	*/
+    where CustomerOrderID = oID;
+end !
+delimiter ;
+
 
