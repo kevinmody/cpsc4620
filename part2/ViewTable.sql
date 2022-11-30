@@ -9,7 +9,7 @@ select * from pickup;
 select * from customerOrder;
 select * from discount; 
 select * from customer;
-select * from baseTopping;
+select * from baseTopping where BaseToppingToppingID = 2 order by BaseToppingSizeID;
 select * from topping;
 select * from baseCost;
 select * from size;
@@ -17,16 +17,12 @@ select * from crust;
 select * from pizzaDiscount;
 select * from orderDiscount;
 
-
-select * from pizza;
-select * from toppingCurrent;
-select * from baseTopping;
-select * from topping;
-select * from baseCost;
-select * from size;
-select * from crust;
+select * from ProfitByOrderType;
+select * from ProfitByPizza;
+select * from ToppingPopularity;
 
 
+/*
 -- PizzaID, ToppingCurrentBaseToppingID, ToppingCurrentCounter 
 select 
 PizzaID, ToppingCurrentBaseToppingID, ToppingName, SizeType, ToppingCurrentCounter, PizzaTotalCost, PizzaTotalPrice, ToppingPrice, ToppingCost, BaseToppingUnit,
@@ -57,7 +53,7 @@ inner join discount as d on d.DiscountID = pd.PizzaDiscountDiscountID
 inner join pizza as p on p.PizzaID = pd.PizzaDiscountPizzaID
 inner join customerOrder as o on o.CustomerOrderID = p.PizzaOrderID;
 
-
+*/
 
 
 

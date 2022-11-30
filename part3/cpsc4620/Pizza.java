@@ -12,8 +12,8 @@ public class Pizza {
 	 * */
 
 	private int PizzaID;
-	private String CrustType;
-	private String Size;
+	private int CrustID;
+	private int SizeID;
 	private int OrderID;
 	private String PizzaState;
 	private String PizzaDate;
@@ -24,23 +24,25 @@ public class Pizza {
 	private ArrayList<Topping> Toppings;
 	private ArrayList<Discount> Discounts;
 
+
 	//each index in this array will represent whether the topping at Toppings.get(index) is doubled.
-	private boolean[] isToppingDoubled;//There's definitely a better way to do this, so you're welcome to try and find it.
+	// Parallel arraylist
+	private ArrayList<Boolean> isToppingDoubled;
 
 
-	public Pizza(int pizzaID, String size, String crustType, int orderID, String pizzaState, String pizzaDate,
-				 double price, double cost) {
+	public Pizza(int pizzaID, int sizeID, int crustID, int orderID, String pizzaState, String pizzaDate, double price, double cost)
+	{
 		PizzaID = pizzaID;
-		CrustType = crustType;
-		Size = size;
+		CrustID = crustID;
+		SizeID = sizeID;
 		OrderID = orderID;
 		PizzaState = pizzaState;
 		PizzaDate = pizzaDate;
 		Price = price;
 		Cost = cost;
 		Toppings = new ArrayList<Topping>();
-		isToppingDoubled = new boolean[17];//We have 17 toppings, the array needs to be size 17. A good programmer wouldn't hard code this.
 		Discounts = new ArrayList<Discount>();
+		isToppingDoubled = new ArrayList<Boolean>();
 	}
 
 	public int getPizzaID() {
@@ -50,18 +52,18 @@ public class Pizza {
 		PizzaID = pizzaID;
 	}
 
-	public String getCrustType() {
-		return CrustType;
+	public int getCrustID() {
+		return CrustID;
 	}
-	public void setCrustType(String crustType) {
-		CrustType = crustType;
+	public void setCrustID(int crustID) {
+		CrustID = crustID;
 	}
 
-	public String getSize() {
-		return Size;
+	public int getSizeID() {
+		return SizeID;
 	}
-	public void setSize(String size) {
-		Size = size;
+	public void setSizeID(int sizeID) {
+		SizeID = sizeID;
 	}
 
 	public int getOrderID() {
@@ -117,6 +119,8 @@ public class Pizza {
 
 	public void addToppings(Topping t, boolean isExtra) {
 		Toppings.add(t);
+		isToppingDoubled.add(isExtra);
+
 		this.Cost += t.getTopCostPerUnit();
 		this.Price += t.getTopPrice();
 		//also add to the prices of the pizza
@@ -128,6 +132,8 @@ public class Pizza {
 
 	public void addDiscounts(Discount d) {
 		Discounts.add(d);
+
+
 		if (d.isPercent()) {
 			this.Price = (this.Price * (1 - (d.getAmount() / 100)));
 		} else {
@@ -139,19 +145,19 @@ public class Pizza {
 	//whenever we add a topping to a pizza, we should also modify the respective index isDoubled array if it has extra topping on it.
 	//i.e., if bacon, toppingID=17 is used with double, we would go in and modify the 16 (yes sixteen, java starts at 0, IDs start at 1) to be true.
 	public void modifyDoubledArray(int index, boolean b) {
-		isToppingDoubled[index] = b;
+		isToppingDoubled.set(index, b);
 	}
 
 	//we'll need to get this array whenever we're about to add to our pizza-topping bridge table so we know if we need to mark isDoubled as true or not.
-	public boolean[] getIsDoubleArray() {
+	public ArrayList<Boolean> getIsDoubleArray() {
 		return isToppingDoubled;
 	}
 
 	@Override
 	public String toString() {
 		return "PizzaID = " + PizzaID +
-				"\nCrustType = " + CrustType +
-				"\nSize = " + Size +
+				"\nCrustType = " + CrustID +
+				"\nSize = " + SizeID +
 				"\nFor order = " + OrderID +
 				"\nPizza Status = " + PizzaState +
 				"\nDate = " + PizzaDate +

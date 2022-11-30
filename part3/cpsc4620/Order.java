@@ -39,7 +39,29 @@ public class Order {
 		DiscountList = new ArrayList<Discount>();
 	}
 
-	public void addPizza(Pizza p) {
+	public Order(int orderID, String orderType, String date, double price, double cost) {
+		OrderID = orderID;
+		OrderType = orderType;
+		Date = date;
+		Price = price;
+		Cost = cost;
+		PizzaList = new ArrayList<Pizza>();
+		DiscountList = new ArrayList<Discount>();
+	}
+
+    public Order() {
+		OrderID = -1;
+		CustID = -1;
+		OrderType = null;
+		Date = null;
+		Price = -1;
+		Cost = -1;
+		isComplete = -1;
+		PizzaList = new ArrayList<Pizza>();
+		DiscountList = new ArrayList<Discount>();
+    }
+
+    public void addPizza(Pizza p) {
 		PizzaList.add(p);
 	}
 

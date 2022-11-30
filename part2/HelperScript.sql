@@ -70,6 +70,10 @@ where CustomerOrderID = 1;
 select * from pizza
 where PizzaOrderID = 1;
 
+select ToppingName, ToppingCurrentInventory from topping order by ToppingName;
+
+select * from ProfitByPizza;
+
 
 
 select

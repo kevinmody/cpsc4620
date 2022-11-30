@@ -42,9 +42,10 @@ CustomerOrderTotalCost as TotalOrderCost,
 from customerOrder
 group by CustomerOrderType,  date_format(CustomerOrderTimeStamp, "%Y%m");
 
+/*
 insert into ProfitByOrderType values
 ("", "GrandTotal", 
 cast((SELECT sum(TotalOrderPrice) FROM Pizzeria.ProfitByOrderType) as decimal(8,2)),
 cast((SELECT sum(TotalOrderCost) FROM Pizzeria.ProfitByOrderType) as decimal(8,2)),
 cast((SELECT sum(Profit) FROM Pizzeria.ProfitByOrderType) as decimal(8,2)));
-
+*/

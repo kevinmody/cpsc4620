@@ -2,8 +2,9 @@
 
 use Pizzeria;
 
+drop user JavaMan;
 create user if not exists JavaMan identified by "SahilKevin";
-grant all privileges on Pizzeria to JavaMan;
+grant SELECT, INSERT, UPDATE on Pizzeria.* to JavaMan;
 
 
 insert into size(SizeType) values

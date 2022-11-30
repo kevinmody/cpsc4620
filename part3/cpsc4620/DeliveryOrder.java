@@ -18,10 +18,10 @@ public class DeliveryOrder extends Order
 	private String street;
 	private String city;
 	private String state;
-	private int zip;
+	private String zip;
 	
 	public DeliveryOrder(int orderID, int custID, String date, double custPrice, double busPrice, int isComplete,
-						 String street, String city, String state, int zip)
+						 String street, String city, String state, String zip)
 	{
 		super(orderID, custID, DBNinja.delivery, date, custPrice, busPrice, isComplete);
 		this.street = street;
@@ -55,11 +55,11 @@ public class DeliveryOrder extends Order
 		return state;
 	}
 
-	public void setZip(int zip) {
+	public void setZip(String zip) {
 		this.zip = zip;
 	}
 
-	public int getZip() {
+	public String getZip() {
 		return zip;
 	}
 

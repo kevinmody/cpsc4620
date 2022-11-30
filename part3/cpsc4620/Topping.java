@@ -17,12 +17,12 @@ public class Topping {
 	private String TopName;
 	private double TopCostPerUnit;
 	private double TopPrice;
-	private int TopMinInventory;
-	private int TopCurrentInventory;
+	private double TopMinInventory;
+	private double TopCurrentInventory;
 	private static int TopStaticCounter;
 	private final ArrayList<Double> TopUnitSize;
 
-	public Topping(int _TopID, String _TopName, double _TopCost, double _TopPrice, int _TopMinInventory, int _TopCurrentInventory, ArrayList<Double> _TopUnitSize) {
+	public Topping(int _TopID, String _TopName, double _TopCost, double _TopPrice, double _TopMinInventory, double _TopCurrentInventory, ArrayList<Double> _TopUnitSize) {
 		TopID = _TopID;
 		TopName = _TopName;
 		TopCostPerUnit = _TopCost;
@@ -31,6 +31,17 @@ public class Topping {
 		TopCurrentInventory = _TopCurrentInventory;
 		TopStaticCounter = 0;
 		TopUnitSize = _TopUnitSize;
+	}
+
+	public Topping(int _TopID, String _TopName, double _TopCost, double _TopPrice, double _TopMinInventory, double _TopCurrentInventory) {
+		TopID = _TopID;
+		TopName = _TopName;
+		TopCostPerUnit = _TopCost;
+		TopPrice = _TopPrice;
+		TopMinInventory = _TopMinInventory;
+		TopCurrentInventory = _TopCurrentInventory;
+		TopStaticCounter = 0;
+		TopUnitSize = new ArrayList<>();
 	}
 
 	public int getTopID() {
@@ -65,19 +76,19 @@ public class Topping {
 		TopPrice = topPrice;
 	}
 
-	public int getTopMinInventory() {
+	public double getTopMinInventory() {
 		return TopMinInventory;
 	}
 
-	public void setTopMinInventory(int topMinInventory) {
+	public void setTopMinInventory(double topMinInventory) {
 		TopMinInventory = topMinInventory;
 	}
 
-	public int getTopCurrentInventory() {
+	public double getTopCurrentInventory() {
 		return TopCurrentInventory;
 	}
 
-	public void setTopCurrentInventory(int topCurrentInventory) {
+	public void setTopCurrentInventory(double topCurrentInventory) {
 		TopCurrentInventory = topCurrentInventory;
 	}
 
