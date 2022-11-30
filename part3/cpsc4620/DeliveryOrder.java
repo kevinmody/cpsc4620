@@ -20,7 +20,7 @@ public class DeliveryOrder extends Order
 	private String state;
 	private String zip;
 	
-	public DeliveryOrder(int orderID, int custID, String date, double custPrice, double busPrice, int isComplete,
+	public DeliveryOrder(int orderID, int custID, String date, double custPrice, double busPrice, boolean isComplete,
 						 String street, String city, String state, String zip)
 	{
 		super(orderID, custID, DBNinja.delivery, date, custPrice, busPrice, isComplete);

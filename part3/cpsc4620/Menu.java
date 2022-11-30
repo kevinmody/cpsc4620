@@ -243,7 +243,7 @@ public class Menu {
 		System.out.println("Please enter table number: ");
 		int tableNum = Integer.parseInt(reader.nextLine());
 
-		Order o = new DineinOrder(-1, c.getCustID(), date, 0, 0, 0, tableNum);
+		Order o = new DineinOrder(-1, c.getCustID(), date, 0, 0, false, tableNum);
 		return o;
 	}
 
@@ -254,7 +254,7 @@ public class Menu {
 		String date = reader.nextLine();
 
 
-		Order o = new DeliveryOrder(-1, c.getCustID(), date, 0, 0, 0, c.getStreet(), c.getCity(), c.getState(), c.getZip());
+		Order o = new DeliveryOrder(-1, c.getCustID(), date, 0, 0, false, c.getStreet(), c.getCity(), c.getState(), c.getZip());
 		return o;
 	}
 
@@ -269,7 +269,7 @@ public class Menu {
 		System.out.println("Please enter the time you will pick it up (in format yyyy-MM-dd HH:mm:ss - 24 hour format): ");
 		String pickup_d = reader.nextLine();
 
-		Order o = new PickupOrder(-1, c.getCustID(), date, 0, 0, 0, 0);
+		Order o = new PickupOrder(-1, c.getCustID(), date, 0, 0, 0, false);
 		return o;
 	}
 

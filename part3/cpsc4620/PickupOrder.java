@@ -18,7 +18,7 @@ public class PickupOrder extends Order {
 	private int isPickedUp;
 	private String pickupTime;
 
-	public PickupOrder(int orderID, int custID, String date, double custPrice, double busPrice, int isPickedUp, int isComplete) {
+	public PickupOrder(int orderID, int custID, String date, double custPrice, double busPrice, int isPickedUp, boolean isComplete) {
 		super(orderID, custID, DBNinja.pickup, date, custPrice, busPrice, isComplete);
 		this.isPickedUp = isPickedUp;
 	}
