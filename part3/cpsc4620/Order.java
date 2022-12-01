@@ -166,7 +166,7 @@ public class Order {
 	@Override
 	public String toString() {
 		try {
-			return "OrderID=" + OrderID +
+			return "OrderID = " + OrderID +
 					"\nDate Placed = " + this.Date +
 					"\nCustomer = " + DBNinja.getCustomerName(CustID) +
 					"\nOrderType = " + OrderType +
@@ -180,11 +180,9 @@ public class Order {
 
 	public String toSimplePrint() {
 		try {
-			return "OrderID = " + OrderID +
-					"\tDate Placed = " + this.Date +
-					"\tCustomer name = " + DBNinja.getCustomerName(CustID) +
-					"\tOrderType = " + OrderType +
-					"\tIsComplete = " + isComplete;
+
+			return String.format("Order ID: %-1d || Date: %s || Customer Name: %-20s || Order Type: %-9s || IsComplete: %s \n", OrderID, Date, DBNinja.getCustomerName(CustID), OrderType, isComplete);
+
 		} catch (SQLException | IOException e) {
 			e.printStackTrace();
 			return "ERROR IN SIMPLE PRINT CUSTOMER";

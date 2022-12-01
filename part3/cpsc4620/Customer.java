@@ -124,7 +124,8 @@ public class Customer
 
 	@Override
 	public String toString() {
-		return "CustID = " + CustID + " | Name = " + FName +  " " + LName + ", Phone = " + Phone;
+		return String.format("ID: %-2d || Name: %-25s || Phone: %s", CustID, FName +  " " + LName, Phone);
+		//return "CustID = " + CustID + " | Name = " + FName +  " " + LName + ", Phone = " + Phone;
 	}
 	
 	

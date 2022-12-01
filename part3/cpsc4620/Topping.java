@@ -65,22 +65,22 @@ public class Topping {
 	}
 
 	public double getTopCost(int sizeID) {
-		return TopCostPerUnit * TopUnitSize.get(sizeID);
+		return TopCostPerUnit * TopUnitSize.get(sizeID - 1);
 	}
 
 	public void useTopping(int sizeID, boolean isDouble) {
 		if (isDouble) {
-			TopCurrentInventory -= (2 * TopUnitSize.get(sizeID));
+			TopCurrentInventory -= (2 * TopUnitSize.get(sizeID - 1));
 			TopStaticCounter += 2;
 		} else {
-			TopCurrentInventory -= (TopUnitSize.get(sizeID));
+			TopCurrentInventory -= (TopUnitSize.get(sizeID - 1));
 			TopStaticCounter += 1;
 		}
 	}
 
 
 	public Boolean canUseTopping(int sizeID) {
-		return ((TopCurrentInventory - (2 * TopUnitSize.get(sizeID))) > 0.0);
+		return ((TopCurrentInventory - (2 * TopUnitSize.get(sizeID - 1))) > 0.0);
 	}
 
 	public void setTopCostPerUnit(double topCostPerUnit) {
@@ -118,13 +118,14 @@ public class Topping {
 	public ArrayList<Double> getTopUnitSize() {
 		return TopUnitSize;
 	}
+
 	public double getTopUnitSize(int size_idx) {
-		return TopUnitSize.get(size_idx);
+		return TopUnitSize.get(size_idx - 1);
 	}
 
-	public void updateTopCurrentInventory(int size, boolean isDouble){
-		if (isDouble) TopCurrentInventory -= (2* TopUnitSize.get(size));
-		else TopCurrentInventory -= (TopUnitSize.get(size));
+	public void updateTopCurrentInventory(int size, boolean isDouble) {
+		if (isDouble) TopCurrentInventory -= (2 * TopUnitSize.get(size - 1));
+		else TopCurrentInventory -= (TopUnitSize.get(size - 1));
 	}
 
 	public void updateTopStaticCounter(boolean isDouble) {

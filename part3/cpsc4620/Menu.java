@@ -403,6 +403,7 @@ public class Menu {
 		 */
 		ArrayList<Order> currOrders = DBNinja.getCurrentOrders();
 		int o_count = 1;
+
 		//see all open orders
 		for (Order o : currOrders) {
 			System.out.println(o_count + ": " + o.toSimplePrint());
@@ -411,8 +412,9 @@ public class Menu {
 
 		//pick the order to mark as completed
 		System.out.println("Which order would you like mark as complete? Enter the number: ");
-		//BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+
 		int chosen_order = Integer.parseInt(reader.nextLine());
+
 		if (chosen_order <= currOrders.size()) {
 			DBNinja.CompleteOrder(currOrders.get(chosen_order - 1));
 		} else {
@@ -427,7 +429,8 @@ public class Menu {
 
 		ArrayList<Topping> curInventory = DBNinja.getInventory();
 		for (Topping t : curInventory) {
-			System.out.println(t.getTopID() + " : " + t.getTopName() + " : " + t.getTopCurrentInventory());
+			//System.out.println(t.getTopID() + " : " + t.getTopName() + " : " + t.getTopCurrentInventory());
+			System.out.printf("ID: %-2d | %-20s - %f\n", t.getTopID(), t.getTopName(), t.getTopCurrentInventory());
 		}
 	}
 
@@ -441,7 +444,8 @@ public class Menu {
 
 		ArrayList<Topping> curInventory = DBNinja.getInventory();
 		for (Topping t : curInventory) {
-			System.out.println(t.getTopID() + " : " + t.getTopName() + " : " + t.getTopCurrentInventory());
+			//System.out.println(t.getTopID() + " : " + t.getTopName() + " : " + t.getTopCurrentInventory());
+			System.out.printf("ID: %-2d | %-20s - %f\n", t.getTopID(), t.getTopName(), t.getTopCurrentInventory());
 		}
 
 		System.out.println("Which topping's inventory's would you like to update (Use number) : ");
@@ -530,6 +534,7 @@ public class Menu {
 
 				} else {
 					System.out.println("Incorrect entry, not an option");
+					chosen_t = Integer.parseInt(reader.nextLine());
 				}
 			}
 		}

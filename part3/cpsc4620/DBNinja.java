@@ -587,12 +587,13 @@ public final class DBNinja {
 		 */
 		try {
 
-			String cust_stmt = "insert into customer(CustomerFname, CustomerLname, CustomerPhone) values (?, ?, ?)";
+			String cust_stmt = "insert into customer(CustomerFname, CustomerLname, CustomerPhone, CustomerID) values (?, ?, ?, ?)";
 			PreparedStatement prepStatement = conn.prepareStatement(cust_stmt);
 
 			prepStatement.setString(1, c.getFName());
 			prepStatement.setString(2, c.getLName());
 			prepStatement.setString(3, c.getPhone());
+			prepStatement.setInt(4, c.getCustID());
 
 			int flag = prepStatement.executeUpdate();
 			if (flag == 0) {
@@ -620,20 +621,20 @@ public final class DBNinja {
 		 */
 
 		try {
-			String order_stmt = "update pizza set PizzaState = ? where PizzaID = ?";
+			String order_stmt = "update customerOrder set CustomerOrderIsComplete = ? where CustomerOrderID = ?";
 			PreparedStatement prepStatement = conn.prepareStatement(order_stmt);
 
-			prepStatement.setString(1, DBNinja.order_complete);
+			prepStatement.setBoolean(1, true);
 			prepStatement.setInt(2, o.getOrderID());
 
 			int flag = prepStatement.executeUpdate();
 			if (flag == 0) {
-				System.out.println("Error updating pizza state");
+				System.out.println("Error marking order as complete");
 			} else {
-				System.out.println("Updating pizza state Successful");
+				System.out.println("Order Marked as complete");
 			}
 		} catch (SQLException e) {
-			System.out.println("Error updating pizza state");
+			System.out.println("Error marking order as complete");
 			while (e != null) {
 				System.out.println("Message     : " + e.getMessage());
 				e = e.getNextException();
@@ -784,12 +785,14 @@ public final class DBNinja {
 		return allTopping;
 	}
 
-	public static void updateInventory(ArrayList<Topping> allToppings) {
+	public static void updateInventory(ArrayList<Topping> allToppings) throws SQLException {
+		connect_to_db();
+
 		String updateTop = "update topping set ToppingStaticCounter = ? where ToppingID = ?;";
 
 		try {
 
-			for (Topping t: allToppings) {
+			for (Topping t : allToppings) {
 
 				PreparedStatement prepStatement = conn.prepareStatement(updateTop);
 
@@ -812,6 +815,8 @@ public final class DBNinja {
 				e = e.getNextException();
 			}
 		}
+
+		conn.close();
 	}
 
 	public static ArrayList<Order> getCurrentOrders() throws SQLException, IOException {
