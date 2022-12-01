@@ -66,6 +66,9 @@ public class Menu {
 				case 8:// view reports
 					PrintReports();
 					break;
+				default:
+					System.out.println("Invalid option selected, please select from 1 - 9.");
+					break;
 			}
 			PrintMenu();
 			//option = reader.nextLine();
