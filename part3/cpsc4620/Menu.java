@@ -259,10 +259,14 @@ public class Menu {
 	}
 
 	public static Order addDelivery(Customer c) {
-		System.out.println("You have selected Dine-in order.");
+		System.out.println("You have selected Delivery order.");
 
 		System.out.println("Enter order placed date (in format yyyy-MM-dd HH:mm:ss - 24 hour format): ");
 		String date = reader.nextLine();
+
+		if(c.getStreet().isBlank() || c.getCity().isBlank() || c.getState().isBlank() || c.getZip().isBlank()) {
+			addCustomerAddress(c);
+		}
 
 
 		Order o = new DeliveryOrder(-1, c.getCustID(), date, 0, 0, false, c.getStreet(), c.getCity(), c.getState(), c.getZip());
@@ -270,7 +274,7 @@ public class Menu {
 	}
 
 	public static Order addPickup(Customer c) {
-		System.out.println("You have selected Dine-in order.");
+		System.out.println("You have selected Pickup order.");
 
 		System.out.println("Enter order placed date (in format yyyy-MM-dd HH:mm:ss - 24 hour format): ");
 		String date = reader.nextLine();
@@ -323,43 +327,45 @@ public class Menu {
 		String phone = reader.nextLine();
 
 
+		int cID = DBNinja.getMaxCustID() + 1;
+		Customer c = new Customer(cID, fname, lname, phone);
+
+
 		System.out.println("Is this a customer who wants delivery? Enter Y/N");
 		String option = reader.nextLine().toLowerCase(Locale.ROOT);
-		String street = "";
-		String city = "";
-		String state = "";
-		String zip = "";
 
 		if (option.equals("y")) {
-
-			System.out.println("Please enter the street and house humber: ");
-			street = reader.nextLine();
-
-			System.out.println("Please enter the city: ");
-			city = reader.nextLine();
-
-			System.out.println("Please enter the state (two letter abbreviation): ");
-			state = reader.nextLine();
-
-			System.out.println("Please enter the 5 digit zip code: ");
-			zip = reader.nextLine();
-
-		}
-
-
-		Customer c;
-		int cID = DBNinja.getMaxCustID() + 1;
-
-
-		if (option.equals("y")) {
-			c = new Customer(cID, fname, lname, phone, street, city, state, zip);
-		} else {
-			c = new Customer(cID, fname, lname, phone);
+			addCustomerAddress(c);
 		}
 
 		DBNinja.addCustomer(c);
 		return c;
 
+	}
+
+	public static void addCustomerAddress(Customer c) {
+
+		String street = "";
+		String city = "";
+		String state = "";
+		String zip = "";
+
+		System.out.println("Please enter the street and house humber: ");
+		street = reader.nextLine();
+
+		System.out.println("Please enter the city: ");
+		city = reader.nextLine();
+
+		System.out.println("Please enter the state (two letter abbreviation): ");
+		state = reader.nextLine();
+
+		System.out.println("Please enter the 5 digit zip code: ");
+		zip = reader.nextLine();
+
+		c.setZip(zip);
+		c.setState(state);
+		c.setCity(city);
+		c.setStreet(street);
 	}
 
 	// View any orders that are not marked as completed
@@ -406,7 +412,7 @@ public class Menu {
 
 		//see all open orders
 		for (Order o : currOrders) {
-			System.out.println(o_count + ": " + o.toSimplePrint());
+			System.out.print(o_count + ": " + o.toSimplePrint());
 			o_count++;
 		}
 
@@ -524,7 +530,7 @@ public class Menu {
 			chosen_t = Integer.parseInt(reader.nextLine());
 
 			if (chosen_t != -1) {
-				if (chosen_t > 0 && chosen_t <= curInventory.size() && curInventory.get(chosen_t).canUseTopping(size)) {
+				if (chosen_t > 0 && chosen_t <= curInventory.size() && curInventory.get(chosen_t-1).canUseTopping(size)) {
 
 					System.out.println("Would you like to add extra of this topping? (Y/N) : ");
 					String yn = reader.nextLine().toLowerCase(Locale.ROOT);
@@ -561,7 +567,6 @@ public class Menu {
 					}
 				}
 			}
-
 		}
 		o.addPizza(newPizza);
 		DBNinja.updateInventory(curInventory);

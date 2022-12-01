@@ -28,10 +28,10 @@ public class Customer
 		LName = lName;
 		Phone = phone;
 
-		Street = null;
-		City = null;
-		State = null;
-		Zip = null;
+		Street = "";
+		City = "";
+		State = "";
+		Zip = "";
 	}
 
 	public Customer(int custID, String fName, String lName, String phone, String street, String city, String state, String zip) {

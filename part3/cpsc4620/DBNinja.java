@@ -86,7 +86,7 @@ public final class DBNinja {
 			}
 
 		} catch (SQLException e) {
-			System.out.println("Error adding Order");
+			System.out.println("Error getting max order id");
 			while (e != null) {
 				System.out.println("Message     : " + e.getMessage());
 				e = e.getNextException();
@@ -94,7 +94,7 @@ public final class DBNinja {
 		}
 
 		//DO NOT FORGET TO CLOSE YOUR CONNECTION
-		conn.close();
+		//conn.close();
 		return newID;
 	}
 
@@ -116,9 +116,9 @@ public final class DBNinja {
 		 * adding the order to the order DB table, but we're also recording
 		 * the necessary data for the delivery, dinein, and pickup tables
 		 */
-		String order = "insert into customerOrder(CustomerOrderID, CustomerOrderCustomerID, CustomerOrderType, CustomerOrderTimeStamp, CustomerOrderTotalprice, CustomerOrderTotalcost, CustomerOrderIsComplete) values (?, ?, (STR_TO_DATE(?, '%Y-%m-%d %H:%i')), ?, ?, ?, ?);";
+		String order = "insert into customerOrder(CustomerOrderID, CustomerOrderCustomerID, CustomerOrderType, CustomerOrderTimeStamp, CustomerOrderTotalprice, CustomerOrderTotalcost, CustomerOrderIsComplete) values (?, ?, (STR_TO_DATE('?', '%Y-%m-%d %H:%i:%s')), ?, ?, ?, ?);";
 		String dineIn_stmt = "insert into dineIn(DineInCustomerOrderID, DineInTableNumber) values (?, ?);";
-		String pickUp_stmt = "insert into pickup(PickupCustomerOrderID, PickupTimestamp) values(?, (STR_TO_DATE(?, '%Y-%m-%d %H:%i')));";
+		String pickUp_stmt = "insert into pickup(PickupCustomerOrderID, PickupTimestamp) values(?, (STR_TO_DATE('?', '%Y-%m-%d %H:%i:%s')));";
 		String delivery_stmt = "insert into delivery(DeliveryCustomerOrderID, DeliveryStreet, DeliveryCity, DeliveryState, DeliveryZip) values (?, ?, ?, ?, ?)";
 		PreparedStatement prepStatement;
 
@@ -141,7 +141,7 @@ public final class DBNinja {
 
 			int flag = prepStatement.executeUpdate();
 			if(flag == 0) {
-				System.out.println("Error adding order");
+				System.out.println("Error adding order " + o.toSimplePrint());
 			}
 			else {
 				System.out.println("Adding Order to customerOrder table successful");
@@ -154,7 +154,7 @@ public final class DBNinja {
 				prepStatement.setInt(2, ((DineinOrder) o).getTableNum() );
 			}
 			else if(o instanceof PickupOrder){
-				// "insert into pickup(PickupCustomerOrderID, PickupTimestamp) values(?, (STR_TO_DATE(?, '%Y-%m-%d %H:%i')))"
+				// "insert into pickup(PickupCustomerOrderID, PickupTimestamp) values(?, (STR_TO_DATE('?', '%Y-%m-%d %H:%i:%s')));";
 				prepStatement = conn.prepareStatement(pickUp_stmt);
 				prepStatement.setInt(1, oID);
 				prepStatement.setString(2, ((PickupOrder) o).getPickupTime());
@@ -230,7 +230,7 @@ public final class DBNinja {
 
 
 		} catch (SQLException e) {
-			System.out.println("Error adding Order");
+			System.out.println("Error getting max pizza id");
 			while (e != null) {
 				System.out.println("Message     : " + e.getMessage());
 				e = e.getNextException();
@@ -243,7 +243,7 @@ public final class DBNinja {
 	}
 
 	public static void addPizza(Pizza p, int orderID) throws SQLException, IOException {
-		connect_to_db();
+		//connect_to_db();
 		/*
 		 * Add the code needed to insert the pizza into into the database.
 		 * Keep in mind adding pizza discounts to that bridge table and
@@ -298,11 +298,11 @@ public final class DBNinja {
 		}
 
 		//DO NOT FORGET TO CLOSE YOUR CONNECTION
-		conn.close();
+		//conn.close();
 	}
 
 	public static void addPizzaTopping(int pizzaID, int sizeID, int toppingID, boolean isDouble) throws IOException, SQLException {
-		connect_to_db();
+		//connect_to_db();
 
 		try {
 			String topCurr_stmt = "insert into toppingCurrent(ToppingCurrentPizzaID, ToppingCurrentBaseToppingID, ToppingCurrentCounter) values(?, ?, ?)";
@@ -331,11 +331,11 @@ public final class DBNinja {
 		}
 
 		//DO NOT FORGET TO CLOSE YOUR CONNECTION
-		conn.close();
+		//conn.close();
 	}
 
 	public static void addPizzaDiscount(int pizzaID, int discountID) throws IOException, SQLException {
-		connect_to_db();
+		//connect_to_db();
 
 		try {
 			String topCurr_stmt = "insert into pizzaDiscount(PizzaDiscountPizzaID, PizzaDiscountDiscountID) values(?, ?)";
@@ -361,11 +361,11 @@ public final class DBNinja {
 		}
 
 		//DO NOT FORGET TO CLOSE YOUR CONNECTION
-		conn.close();
+		//conn.close();
 	}
 
 	public static void addOrderDiscount(int orderID, int discountID) throws IOException, SQLException {
-		connect_to_db();
+		//connect_to_db();
 
 		try {
 			String topCurr_stmt = "insert into orderDiscount(OrderDiscountOrderID, OrderDiscountDiscountID) values (?, ?)";
@@ -391,7 +391,7 @@ public final class DBNinja {
 		}
 
 		//DO NOT FORGET TO CLOSE YOUR CONNECTION
-		conn.close();
+		//conn.close();
 	}
 
 	public static int getMaxCustID() throws SQLException, IOException {
@@ -413,7 +413,7 @@ public final class DBNinja {
 				newID = returnValue.getInt(1);
 			}
 		} catch (SQLException e) {
-			System.out.println("Error adding Order");
+			System.out.println("Error getting max customer id");
 			while (e != null) {
 				System.out.println("Message     : " + e.getMessage());
 				e = e.getNextException();
