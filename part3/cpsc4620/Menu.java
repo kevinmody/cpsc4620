@@ -284,7 +284,7 @@ public class Menu {
 		System.out.println("Please enter the time you will pick it up (in format yyyy-MM-dd HH:mm:ss - 24 hour format): ");
 		String pickup_d = reader.nextLine();
 
-		Order o = new PickupOrder(-1, c.getCustID(), date, 0, 0, 0, false);
+		Order o = new PickupOrder(-1, c.getCustID(), date, 0, 0, 0, false, pickup_d);
 		return o;
 	}
 

@@ -45,6 +45,7 @@ public class Order {
 		Date = date;
 		Price = price;
 		Cost = cost;
+		isComplete = false;
 		PizzaList = new ArrayList<Pizza>();
 		DiscountList = new ArrayList<Discount>();
 	}

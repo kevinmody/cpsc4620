@@ -23,6 +23,12 @@ public class PickupOrder extends Order {
 		this.isPickedUp = isPickedUp;
 	}
 
+	public PickupOrder(int orderID, int custID, String date, double custPrice, double busPrice, int isPickedUp, boolean isComplete, String _pickupTime) {
+		super(orderID, custID, DBNinja.pickup, date, custPrice, busPrice, isComplete);
+		this.isPickedUp = isPickedUp;
+		pickupTime = _pickupTime;
+	}
+
 	public int getIsPickedUp() {
 		return isPickedUp;
 	}

@@ -116,11 +116,11 @@ public final class DBNinja {
 		 * adding the order to the order DB table, but we're also recording
 		 * the necessary data for the delivery, dinein, and pickup tables
 		 */
-		String order = "insert into customerOrder(CustomerOrderID, CustomerOrderCustomerID, CustomerOrderType, CustomerOrderTimeStamp, CustomerOrderTotalprice, CustomerOrderTotalcost, CustomerOrderIsComplete) values (?, ?, (STR_TO_DATE('?', '%Y-%m-%d %H:%i:%s')), ?, ?, ?, ?);";
+		String order = "insert into customerOrder(CustomerOrderID, CustomerOrderCustomerID, CustomerOrderType, CustomerOrderTimeStamp, CustomerOrderTotalprice, CustomerOrderTotalcost, CustomerOrderIsComplete) values" +
+				 "(?, ?, ?, (STR_TO_DATE('?', '%Y-%m-%d %H:%i:%s')), ?, ?, ?);";
 		String dineIn_stmt = "insert into dineIn(DineInCustomerOrderID, DineInTableNumber) values (?, ?);";
 		String pickUp_stmt = "insert into pickup(PickupCustomerOrderID, PickupTimestamp) values(?, (STR_TO_DATE('?', '%Y-%m-%d %H:%i:%s')));";
 		String delivery_stmt = "insert into delivery(DeliveryCustomerOrderID, DeliveryStreet, DeliveryCity, DeliveryState, DeliveryZip) values (?, ?, ?, ?, ?)";
-		PreparedStatement prepStatement;
 
 		try{
 
@@ -128,16 +128,21 @@ public final class DBNinja {
 			int oID = getMaxOrderID() + 1;
 			o.setOrderID(oID);
 
-
+			// int, int, String, String,
 			// (CustomerOrderID, CustomerOrderCustomerID, CustomerOrderType, CustomerOrderTimeStamp, CustomerOrderTotalprice, CustomerOrderTotalcost, CustomerOrderIsComplete)
-			prepStatement = conn.prepareStatement(order);
+			PreparedStatement prepStatement = conn.prepareStatement(order);
+
 			prepStatement.setInt(1, oID);
 			prepStatement.setInt(2, o.getCustID());
+
 			prepStatement.setString(3, o.getOrderType());
 			prepStatement.setString(4, o.getDate());
+
 			prepStatement.setDouble(5, o.getPrice());
 			prepStatement.setDouble(6, o.getCost());
+
 			prepStatement.setBoolean(7, o.getIsComplete());
+
 
 			int flag = prepStatement.executeUpdate();
 			if(flag == 0) {
@@ -145,57 +150,69 @@ public final class DBNinja {
 			}
 			else {
 				System.out.println("Adding Order to customerOrder table successful");
+
 			}
 
 			if(o instanceof DineinOrder){
 				// "insert into dineIn(DineInCustomerOrderID, DineInTableNumber) values (?, ?);"
-				prepStatement = conn.prepareStatement(dineIn_stmt);
-				prepStatement.setInt(1, oID);
-				prepStatement.setInt(2, ((DineinOrder) o).getTableNum() );
+				PreparedStatement prepDinein = conn.prepareStatement(dineIn_stmt);
+				prepDinein.setInt(1, oID);
+				prepDinein.setInt(2, ((DineinOrder) o).getTableNum() );
+
+				flag = prepDinein.executeUpdate();
+				if(flag == 0) {
+					System.out.println("Error adding Dine-In Order");
+				}
 			}
 			else if(o instanceof PickupOrder){
 				// "insert into pickup(PickupCustomerOrderID, PickupTimestamp) values(?, (STR_TO_DATE('?', '%Y-%m-%d %H:%i:%s')));";
-				prepStatement = conn.prepareStatement(pickUp_stmt);
-				prepStatement.setInt(1, oID);
-				prepStatement.setString(2, ((PickupOrder) o).getPickupTime());
+				PreparedStatement prepPickup = conn.prepareStatement(pickUp_stmt);
+				prepPickup.setInt(1, oID);
+				prepPickup.setString(2, ((PickupOrder) o).getPickupTime());
+
+				flag = prepPickup.executeUpdate();
+				if(flag == 0) {
+					System.out.println("Error adding Pickup Order");
+				}
+
 			}
 			else {
 				//if(o instanceof DineinOrder){
 				// "insert into delivery(DeliveryCustomerOrderID, DeliveryStreet, DeliveryCity, DeliveryState, DeliveryZip) values (?, ?, ?, ?, ?)"
-				prepStatement = conn.prepareStatement(delivery_stmt);
-				prepStatement.setInt(1, oID);
-				prepStatement.setString(2, ((DeliveryOrder) o).getStreet());
-				prepStatement.setString(3, ((DeliveryOrder) o).getCity());
-				prepStatement.setString(4, ((DeliveryOrder) o).getState());
-				prepStatement.setString(5, ((DeliveryOrder) o).getZip());
+				PreparedStatement prepdelivery = conn.prepareStatement(delivery_stmt);
+				prepdelivery.setInt(1, oID);
+				prepdelivery.setString(2, ((DeliveryOrder) o).getStreet());
+				prepdelivery.setString(3, ((DeliveryOrder) o).getCity());
+				prepdelivery.setString(4, ((DeliveryOrder) o).getState());
+				prepdelivery.setString(5, ((DeliveryOrder) o).getZip());
+
+				flag = prepdelivery.executeUpdate();
+				if(flag == 0) {
+					System.out.println("Error adding Delivery Order");
+				}
 			}
 
 
 
 
-			flag = prepStatement.executeUpdate();
-			if(flag == 0) {
-				System.out.println("Error adding order");
-			}
-			else {
+
+			if(flag != 0) {
 				System.out.println("Adding DineIn/Pick/Delivery Successful");
 
 				// Adding all pizza
-				for (Pizza p: o.getPizzaList()) {
+				for (Pizza p : o.getPizzaList()) {
 					DBNinja.addPizza(p, oID);
 				}
 
 				// Adding all discounts
-				for (Discount d: o.getDiscountList()) {
+				for (Discount d : o.getDiscountList()) {
 					DBNinja.addOrderDiscount(oID, d.getDiscountID());
 				}
-
-
 			}
 
 		}
 		catch (SQLException e) {
-			System.out.println("Error adding Order");
+			System.out.println("Error adding Order - addOrder");
 			while (e != null) {
 				System.out.println("Message     : " + e.getMessage());
 				e = e.getNextException();
@@ -513,73 +530,6 @@ public final class DBNinja {
 		conn.close();
 	}
 
-	public static void usePizzaDiscount(Pizza p, Discount d) throws SQLException, IOException {
-		connect_to_db();
-		/*
-		 * Helper function I used to update the pizza-discount bridge table.
-		 * You might use this, you might not depending on where / how to want to update
-		 * this table
-		 */
-
-		try {
-
-			String pizzaDiscount_stmt = "insert into pizzaDiscount(PizzaDiscountPizzaID, PizzaDiscountDiscountID) values (?, ?);";
-			PreparedStatement prepStatement = conn.prepareStatement(pizzaDiscount_stmt);
-
-			prepStatement.setInt(1, p.getPizzaID());
-			prepStatement.setInt(2, d.getDiscountID());
-
-			int flag = prepStatement.executeUpdate();
-			if (flag == 0) {
-				System.out.println("Error inserting pizza Discount");
-			} else {
-				System.out.println("Inserting pizzaDiscount Successful");
-			}
-		} catch (SQLException e) {
-			System.out.println("Error adding pizzaDiscount");
-			while (e != null) {
-				System.out.println("Message     : " + e.getMessage());
-				e = e.getNextException();
-			}
-		}
-
-		//DO NOT FORGET TO CLOSE YOUR CONNECTION
-		conn.close();
-	}
-	
-	public static void useOrderDiscount(Order o, Discount d) throws SQLException, IOException {
-		connect_to_db();
-		/*
-		 * Helper function I used to update the pizza-discount bridge table.
-		 * You might use this, you might not depending on where / how to want to update
-		 * this table
-		 */
-		try {
-
-			String orderDiscount_stmt = "insert into orderDiscount(OrderDiscountOrderID, OrderDiscountDiscountID) values (?, ?);";
-			PreparedStatement prepStatement = conn.prepareStatement(orderDiscount_stmt);
-
-			prepStatement.setInt(1, o.getOrderID());
-			prepStatement.setInt(2, d.getDiscountID());
-
-			int flag = prepStatement.executeUpdate();
-			if (flag == 0) {
-				System.out.println("Error inserting order Discount");
-			} else {
-				System.out.println("Inserting orderDiscount Successful");
-			}
-		} catch (SQLException e) {
-			System.out.println("Error adding orderDiscount");
-			while (e != null) {
-				System.out.println("Message     : " + e.getMessage());
-				e = e.getNextException();
-			}
-		}
-
-		//DO NOT FORGET TO CLOSE YOUR CONNECTION
-		conn.close();
-	}
-	
 	public static void addCustomer(Customer c) throws SQLException, IOException {
 		connect_to_db();
 		/*
@@ -662,9 +612,9 @@ public final class DBNinja {
 
 			int flag = prepStatement.executeUpdate();
 			if (flag == 0) {
-				System.out.println("Error updating topping inventory");
+				System.out.println("Error updating topping inventory - AddToInventory");
 			} else {
-				System.out.println("Updating topping inventory Successful");
+				//System.out.println("Updating topping inventory Successful");
 			}
 
 
@@ -801,9 +751,9 @@ public final class DBNinja {
 
 				int flag = prepStatement.executeUpdate();
 				if (flag == 0) {
-					System.out.println("Error updating topping inventory");
+					System.out.println("Error updating topping inventory - updateInventory");
 				} else {
-					System.out.println("Updating topping inventory Successful");
+					//System.out.println("Updating topping inventory Successful");
 				}
 			}
 
@@ -1071,24 +1021,6 @@ public final class DBNinja {
 		//DO NOT FORGET TO CLOSE YOUR CONNECTION
 		conn.close();
 		return custs;
-	}
-	
-	public static int getNextOrderID() throws SQLException, IOException
-	{
-		/*
-		 * A helper function I had to use because I forgot to make
-		 * my OrderID auto increment...You can remove it if you
-		 * did not forget to auto increment your orderID.
-		 */
-		
-		
-		
-		
-		
-		
-		//DO NOT FORGET TO CLOSE YOUR CONNECTION
-		conn.close();
-		return -1;
 	}
 	
 	public static void printToppingPopReport() throws SQLException, IOException {
