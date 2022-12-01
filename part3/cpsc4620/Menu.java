@@ -238,6 +238,35 @@ public class Menu {
 			}
 		}
 
+		// Adding Discount to Whole Order
+		// NOT SAME AS ADDING DISCOUNT TO AN INDIVIDUAL PIZZA
+		System.out.println("Should any discounts be added for this whole order? Enter Y or N: ");
+		String yn = reader.nextLine().toLowerCase(Locale.ROOT);
+		if (yn.equals("y")) {
+
+			// add discounts
+			int chosen_d = 0;
+
+			ArrayList<Discount> discs = DBNinja.getDiscountList();
+
+			while (chosen_d != -1) {
+				for (Discount d : discs) {
+					System.out.println(d.getDiscountID() + " - " + d.getDiscountName() + " | " + d.getAmount());
+				}
+
+				System.out.println("Which discount do you want to add? Enter the number. Enter -1 to stop adding discounts: ");
+
+				chosen_d = Integer.parseInt(reader.nextLine());
+				if (chosen_d != -1) {
+					if (chosen_d > 0 && chosen_d <= discs.size()) {
+						order.addDiscount(discs.get(chosen_d-1));
+					} else {
+						System.out.println("Incorrect entry, not an option");
+					}
+				}
+			}
+		}
+
 		DBNinja.addOrder(order);
 
 		System.out.println("Finished adding order...Returning to menu...");
@@ -254,7 +283,7 @@ public class Menu {
 		System.out.println("Please enter table number: ");
 		int tableNum = Integer.parseInt(reader.nextLine());
 
-		Order o = new DineinOrder(-1, c.getCustID(), date, 0, 0, false, tableNum);
+		Order o = new DineinOrder(-1, 0, date, 0, 0, false, tableNum);
 		return o;
 	}
 
