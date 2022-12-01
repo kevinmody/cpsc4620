@@ -2,6 +2,9 @@ package cpsc4620;
 
 import java.io.IOException;
 import java.sql.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.Date;
 
@@ -48,6 +51,9 @@ public final class DBNinja {
 
 	public final static String order_notComplete = "Not Complete";
 	public final static String order_complete = "Complete";
+
+	public final static DateTimeFormatter Date_formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+	public final static SimpleDateFormat Date_Simple_format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 	/**
 	 * This function will handle the connection to the database
@@ -116,10 +122,11 @@ public final class DBNinja {
 		 * adding the order to the order DB table, but we're also recording
 		 * the necessary data for the delivery, dinein, and pickup tables
 		 */
-		String order = "insert into customerOrder(CustomerOrderID, CustomerOrderCustomerID, CustomerOrderType, CustomerOrderTimeStamp, CustomerOrderTotalprice, CustomerOrderTotalcost, CustomerOrderIsComplete) values" +
-				 "(?, ?, ?, (STR_TO_DATE('?', '%Y-%m-%d %H:%i:%s')), ?, ?, ?);";
+		//String order = "insert into customerOrder(CustomerOrderID, CustomerOrderCustomerID, CustomerOrderType, CustomerOrderTimeStamp, CustomerOrderTotalprice, CustomerOrderTotalcost, CustomerOrderIsComplete) values (?, ?, ?, (STR_TO_DATE('?', '%Y-%m-%d %H:%i:%s')), ?, ?, ?);";
+		String order = "insert into customerOrder(CustomerOrderID, CustomerOrderCustomerID, CustomerOrderType, CustomerOrderTimeStamp, CustomerOrderTotalprice, CustomerOrderTotalcost, CustomerOrderIsComplete) values (?, ?, ?, ?, ?, ?, ?);";
 		String dineIn_stmt = "insert into dineIn(DineInCustomerOrderID, DineInTableNumber) values (?, ?);";
-		String pickUp_stmt = "insert into pickup(PickupCustomerOrderID, PickupTimestamp) values(?, (STR_TO_DATE('?', '%Y-%m-%d %H:%i:%s')));";
+		//String pickUp_stmt = "insert into pickup(PickupCustomerOrderID, PickupTimestamp) values(?, (STR_TO_DATE('?', '%Y-%m-%d %H:%i:%s')));";
+		String pickUp_stmt = "insert into pickup(PickupCustomerOrderID, PickupTimestamp) values(?, ?);";
 		String delivery_stmt = "insert into delivery(DeliveryCustomerOrderID, DeliveryStreet, DeliveryCity, DeliveryState, DeliveryZip) values (?, ?, ?, ?, ?)";
 
 		try{
@@ -127,6 +134,11 @@ public final class DBNinja {
 			// Getting max
 			int oID = getMaxOrderID() + 1;
 			o.setOrderID(oID);
+
+			//Date oDate = DBNinja.Date_formatter.parse(o.getDate());
+			Date oDate = DBNinja.Date_Simple_format.parse(o.getDate());
+			Timestamp oSQLDate =  new java.sql.Timestamp(oDate.getTime());
+
 
 			// int, int, String, String,
 			// (CustomerOrderID, CustomerOrderCustomerID, CustomerOrderType, CustomerOrderTimeStamp, CustomerOrderTotalprice, CustomerOrderTotalcost, CustomerOrderIsComplete)
@@ -136,7 +148,7 @@ public final class DBNinja {
 			prepStatement.setInt(2, o.getCustID());
 
 			prepStatement.setString(3, o.getOrderType());
-			prepStatement.setString(4, o.getDate());
+			prepStatement.setTimestamp(4, oSQLDate);
 
 			prepStatement.setDouble(5, o.getPrice());
 			prepStatement.setDouble(6, o.getCost());
@@ -165,10 +177,14 @@ public final class DBNinja {
 				}
 			}
 			else if(o instanceof PickupOrder){
-				// "insert into pickup(PickupCustomerOrderID, PickupTimestamp) values(?, (STR_TO_DATE('?', '%Y-%m-%d %H:%i:%s')));";
+				// "insert into pickup(PickupCustomerOrderID, PickupTimestamp) values(?, ?);";
+
+				Date pDate = DBNinja.Date_Simple_format.parse(((PickupOrder) o).getPickupTime());
+				Timestamp pSQLDate =  new java.sql.Timestamp(pDate.getTime());
+
 				PreparedStatement prepPickup = conn.prepareStatement(pickUp_stmt);
 				prepPickup.setInt(1, oID);
-				prepPickup.setString(2, ((PickupOrder) o).getPickupTime());
+				prepPickup.setTimestamp(2, pSQLDate);
 
 				flag = prepPickup.executeUpdate();
 				if(flag == 0) {
@@ -177,7 +193,7 @@ public final class DBNinja {
 
 			}
 			else {
-				//if(o instanceof DineinOrder){
+				//if(o instanceof DeliveryOrder){
 				// "insert into delivery(DeliveryCustomerOrderID, DeliveryStreet, DeliveryCity, DeliveryState, DeliveryZip) values (?, ?, ?, ?, ?)"
 				PreparedStatement prepdelivery = conn.prepareStatement(delivery_stmt);
 				prepdelivery.setInt(1, oID);
@@ -217,8 +233,9 @@ public final class DBNinja {
 				System.out.println("Message     : " + e.getMessage());
 				e = e.getNextException();
 			}
+		} catch (ParseException e) {
+			e.printStackTrace();
 		}
-
 
 
 		//DO NOT FORGET TO CLOSE YOUR CONNECTION
@@ -260,7 +277,7 @@ public final class DBNinja {
 	}
 
 	public static void addPizza(Pizza p, int orderID) throws SQLException, IOException {
-		//connect_to_db();
+		connect_to_db();
 		/*
 		 * Add the code needed to insert the pizza into into the database.
 		 * Keep in mind adding pizza discounts to that bridge table and
@@ -315,11 +332,11 @@ public final class DBNinja {
 		}
 
 		//DO NOT FORGET TO CLOSE YOUR CONNECTION
-		//conn.close();
+		conn.close();
 	}
 
 	public static void addPizzaTopping(int pizzaID, int sizeID, int toppingID, boolean isDouble) throws IOException, SQLException {
-		//connect_to_db();
+		connect_to_db();
 
 		try {
 			String topCurr_stmt = "insert into toppingCurrent(ToppingCurrentPizzaID, ToppingCurrentBaseToppingID, ToppingCurrentCounter) values(?, ?, ?)";
@@ -348,11 +365,11 @@ public final class DBNinja {
 		}
 
 		//DO NOT FORGET TO CLOSE YOUR CONNECTION
-		//conn.close();
+		conn.close();
 	}
 
 	public static void addPizzaDiscount(int pizzaID, int discountID) throws IOException, SQLException {
-		//connect_to_db();
+		connect_to_db();
 
 		try {
 			String topCurr_stmt = "insert into pizzaDiscount(PizzaDiscountPizzaID, PizzaDiscountDiscountID) values(?, ?)";
@@ -378,11 +395,11 @@ public final class DBNinja {
 		}
 
 		//DO NOT FORGET TO CLOSE YOUR CONNECTION
-		//conn.close();
+		conn.close();
 	}
 
 	public static void addOrderDiscount(int orderID, int discountID) throws IOException, SQLException {
-		//connect_to_db();
+		connect_to_db();
 
 		try {
 			String topCurr_stmt = "insert into orderDiscount(OrderDiscountOrderID, OrderDiscountDiscountID) values (?, ?)";
@@ -408,7 +425,7 @@ public final class DBNinja {
 		}
 
 		//DO NOT FORGET TO CLOSE YOUR CONNECTION
-		//conn.close();
+		conn.close();
 	}
 
 	public static int getMaxCustID() throws SQLException, IOException {
