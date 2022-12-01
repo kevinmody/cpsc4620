@@ -28,8 +28,8 @@ create table topping (
     ToppingName varchar(255) not null unique,
     ToppingCost decimal(6,2) not null default 0.00,
     ToppingPrice decimal(6,2) not null default 0.00,
-    ToppingCurrentInventory decimal(6,4) not null default 0.0,
-    ToppingMinInventory decimal(6,4) not null default 10.0,
+    ToppingCurrentInventory decimal(12,4) not null default 0.0,
+    ToppingMinInventory decimal(12,4) not null default 10.0,
     ToppingStaticCounter Integer not null default 0
 );
 

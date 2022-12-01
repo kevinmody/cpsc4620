@@ -20,23 +20,23 @@ insert into baseCost(BaseCostSizeID, BaseCostCrustID, BaseCostPrize, BaseCostCos
 (4,1,10,2), (4,2,10,3), (4,3,11.5,4.5), (4,4,12.5,6);
 
 insert into topping(ToppingName, ToppingPrice, ToppingCost, ToppingCurrentInventory) values
-("Pepperoni", 1.25, 0.2, 100),
-("Sausage", 1.25, 0.15, 100),
-("Ham", 1.5, 0.15, 78),
-("Chicken", 1.75, 0.25, 56),
-("Green Pepper", 0.5, 0.02, 79),
-("Onion", 0.5, 0.02, 85),
-("Roma Tomato ", 0.75, 0.03, 86),
-("Mushroom", 0.75, 0.1, 52),
-("Black Olive", 0.6, 0.1, 39),
-("Pineapple", 1, 0.25, 15),
-("Jalapeno", 0.5, 0.05, 64),
-("Banana Pepper", 0.5, 0.05, 36),
-("Regular Cheese", 1.5, 0.12, 250),
-("Four Cheese Blend", 2, 0.15, 150),
-("Feta Cheese", 2, 0.18, 75),
-("Goat Cheese", 2, 0.2, 54),
-("Bacon", 1.5, 0.25, 89);
+("Pepperoni", 1.25, 0.2, 100.0),
+("Sausage", 1.25, 0.15, 100.0),
+("Ham", 1.5, 0.15, 78.0),
+("Chicken", 1.75, 0.25, 56.0),
+("Green Pepper", 0.5, 0.02, 79.0),
+("Onion", 0.5, 0.02, 85.0),
+("Roma Tomato ", 0.75, 0.03, 86.0),
+("Mushroom", 0.75, 0.1, 52.0),
+("Black Olive", 0.6, 0.1, 39.0),
+("Pineapple", 1, 0.25, 15.0),
+("Jalapeno", 0.5, 0.05, 64.0),
+("Banana Pepper", 0.5, 0.05, 36.0),
+("Regular Cheese", 1.5, 0.12, 250.0),
+("Four Cheese Blend", 2, 0.15, 150.0),
+("Feta Cheese", 2, 0.18, 75.0),
+("Goat Cheese", 2, 0.2, 54.0),
+("Bacon", 1.5, 0.25, 89.0);
 
 insert into baseTopping(BaseToppingToppingID, BaseToppingSizeID, BaseToppingUnit) values
 (1, 1, 2), (1, 2, 2.75), (1, 3, 3.5), (1, 4, 4.5),

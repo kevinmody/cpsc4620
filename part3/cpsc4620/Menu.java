@@ -204,6 +204,7 @@ public class Menu {
 
 		//creating a pizza
 		ArrayList<Pizza> pizza_list = new ArrayList<>();
+		pizza_list.add(buildPizza(order));
 		boolean all_pizza_added = false;
 		while (!all_pizza_added) {
 			//pizza_list.add(buildPizza(order));
@@ -229,6 +230,7 @@ public class Menu {
 				}
 			}
 		}
+
 		System.out.println("Finished adding order...Returning to menu...");
 	}
 
@@ -415,13 +417,9 @@ public class Menu {
 		//print the inventory. I am really just concerned with the ID, the name, and the current inventory
 
 		ArrayList<Topping> curInventory = DBNinja.getInventory();
-		int t_count = 1;
 		for (Topping t : curInventory) {
-			//System.out.println(Integer.toString(t_count) + ": " + t.getName() + " Level: " + Double.toString(t.getInv()));
-			t_count++;
+			System.out.println(t.getTopID() + " : " + t.getTopName() + " : " + t.getTopCurrentInventory());
 		}
-
-
 	}
 
 	// Select an inventory item and add more to the inventory level to re-stock the
@@ -430,8 +428,29 @@ public class Menu {
 		/*
 		 * This should print the current inventory and then ask the user which topping they want to add more to and how much to add
 		 */
-		ArrayList<Topping> curInventory = DBNinja.getInventory();
 
+
+		ArrayList<Topping> curInventory = DBNinja.getInventory();
+		for (Topping t : curInventory) {
+			System.out.println(t.getTopID() + " : " + t.getTopName() + " : " + t.getTopCurrentInventory());
+		}
+
+		System.out.println("Which topping's inventory's would you like to update (Use number) : ");
+		int topID = Integer.parseInt(reader.nextLine());
+		while (topID < 1 || topID > curInventory.size()) {
+			System.out.println("Invalid topping index chosen. Select again");
+			System.out.println("Which topping's inventory's would you like to update : ");
+			topID = Integer.parseInt(reader.nextLine());
+		}
+		System.out.println("How much you want to update : ");
+		double add = Double.parseDouble(reader.nextLine());
+		while (add <= 0) {
+			System.out.println("You cannot update inventory in negative or zero.\nHow much you want to update : ");
+			add = Double.parseDouble(reader.nextLine());
+		}
+
+		Topping t = curInventory.get(topID - 1);
+		DBNinja.AddToInventory(t, add);
 	}
 
 	// A function that builds a pizza. Used in our add new order function
