@@ -30,7 +30,7 @@ public class Menu {
 	public static void main(String[] args) throws SQLException, IOException {
 		//BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
-		System.out.println("Welcome to Taylor's Pizzeria!");
+		System.out.println("Welcome to Kevin and Sahil Bro's Pizzeria!");
 
 		int menu_option = 0;
 
