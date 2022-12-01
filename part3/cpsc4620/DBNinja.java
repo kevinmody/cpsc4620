@@ -49,7 +49,7 @@ public final class DBNinja {
 	public final static int crust_gf = 4;
 	private final static int crust_max_int = 4;
 
-	public final static String order_notComplete = "Not Complete";
+	public final static String order_notComplete = "Not-Complete";
 	public final static String order_complete = "Complete";
 
 	public final static DateTimeFormatter Date_formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -158,10 +158,10 @@ public final class DBNinja {
 
 			int flag = prepStatement.executeUpdate();
 			if(flag == 0) {
-				System.out.println("Error adding order " + o.toSimplePrint());
+				System.out.println("Error adding order to customerOrder toable");
 			}
 			else {
-				System.out.println("Adding Order to customerOrder table successful");
+				//System.out.println("Adding Order to customerOrder table successful");
 
 			}
 
@@ -277,6 +277,7 @@ public final class DBNinja {
 	}
 
 	public static void addPizza(Pizza p, int orderID) throws SQLException, IOException {
+
 		connect_to_db();
 		/*
 		 * Add the code needed to insert the pizza into into the database.
@@ -292,8 +293,18 @@ public final class DBNinja {
 
 			int pID = getMaxPizzaID() + 1;
 			p.setPizzaID(pID);
+			p.setOrderID(orderID);
+
+			System.out.println("Is connection Closed (addPizza): " + conn.isClosed());
+
+			if (conn.isClosed()) {
+				connect_to_db();
+			}
+
+			System.out.println("Is connection Closed (addPizza): " + conn.isClosed());
 
 			prepStatement = conn.prepareStatement(pizza_stmt);
+
 
 			prepStatement.setInt(1, pID);
 			prepStatement.setInt(2, p.getCrustID());
@@ -304,6 +315,9 @@ public final class DBNinja {
 			prepStatement.setDouble(7, p.getCost());
 
 			int flag = prepStatement.executeUpdate();
+
+			//System.out.println("Is connection Closed (addPizza): " + conn.isClosed());
+
 			if (flag == 0) {
 				System.out.println("Error adding pizza");
 			} else {

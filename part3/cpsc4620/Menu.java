@@ -412,7 +412,7 @@ public class Menu {
 		//Print off high level information about the order
 		int o_count = 1;
 		for (Order o : currOrders) {
-			System.out.println(o_count + ": " + o.toSimplePrint());
+			System.out.print(o_count + ": " + o.toSimplePrint());
 			o_count++;
 		}
 
