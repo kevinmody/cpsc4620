@@ -63,6 +63,8 @@ public class Order {
 
     public void addPizza(Pizza p) {
 		PizzaList.add(p);
+		Price += p.getPrice();
+		Cost += p.getCost();
 	}
 
 
@@ -159,6 +161,7 @@ public class Order {
 	}
 
 
+
 	//two print statements because one is slightly easier to read. If you can make pretty print statements, you're absolutely welcome to change these.
 	@Override
 	public String toString() {
@@ -182,10 +185,7 @@ public class Order {
 					"\tCustomer name = " + DBNinja.getCustomerName(CustID) +
 					"\tOrderType = " + OrderType +
 					"\tIsComplete = " + isComplete;
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return "ERROR IN SIMPLE PRINT CUSTOMER";
-		} catch (IOException e) {
+		} catch (SQLException | IOException e) {
 			e.printStackTrace();
 			return "ERROR IN SIMPLE PRINT CUSTOMER";
 		}

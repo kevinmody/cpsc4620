@@ -185,14 +185,17 @@ public class Menu {
 			switch (order_type) {
 				case 1:
 					order = addDinein(customer);
+					order.setOrderType(DBNinja.dine_in);
 					got_order_type = true;
 					break;
 				case 2:
 					order = addPickup(customer);
+					order.setOrderType(DBNinja.pickup);
 					got_order_type = true;
 					break;
 				case 3:
 					order = addDelivery(customer);
+					order.setOrderType(DBNinja.delivery);
 					got_order_type = true;
 					break;
 				default:
@@ -203,8 +206,8 @@ public class Menu {
 
 
 		//creating a pizza
-		ArrayList<Pizza> pizza_list = new ArrayList<>();
-		pizza_list.add(buildPizza(order));
+		buildPizza(order);
+
 		boolean all_pizza_added = false;
 		while (!all_pizza_added) {
 			//pizza_list.add(buildPizza(order));
@@ -219,7 +222,8 @@ public class Menu {
 				switch (response) {
 					case 1:
 						add_another_answer = true;
-						pizza_list.add(buildPizza(order));
+
+						buildPizza(order);
 						break;
 					case 2:
 						add_another_answer = true;
@@ -230,6 +234,8 @@ public class Menu {
 				}
 			}
 		}
+
+		DBNinja.addOrder(order);
 
 		System.out.println("Finished adding order...Returning to menu...");
 	}
@@ -332,20 +338,20 @@ public class Menu {
 			System.out.println("Please enter the state (two letter abbreviation): ");
 			state = reader.nextLine();
 
-			System.out.println("Please enter the 6 number zip code: ");
+			System.out.println("Please enter the 5 digit zip code: ");
 			zip = reader.nextLine();
 
 		}
 
 
-
 		Customer c;
+		int cID = DBNinja.getMaxCustID() + 1;
 
 
 		if (option.equals("y")) {
-			c = new Customer(-1, fname, lname, phone, street, city, state, zip);
+			c = new Customer(cID, fname, lname, phone, street, city, state, zip);
 		} else {
-			c = new Customer(-1, fname, lname, phone);
+			c = new Customer(cID, fname, lname, phone);
 		}
 
 		DBNinja.addCustomer(c);
@@ -396,7 +402,7 @@ public class Menu {
 		int o_count = 1;
 		//see all open orders
 		for (Order o : currOrders) {
-			System.out.println(Integer.toString(o_count) + ": " + o.toSimplePrint());
+			System.out.println(o_count + ": " + o.toSimplePrint());
 			o_count++;
 		}
 
@@ -471,7 +477,6 @@ public class Menu {
 		 */
 		//BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
-		Pizza ret = null;
 
 		//select size
 		System.out.println("What size is the pizza? \n1.) Small \n2.) Medium\n3.) Large\n4.) X-Large \n Enter the corresponding number: ");
@@ -498,12 +503,12 @@ public class Menu {
 		double base_price = DBNinja.getBasePrice(size, crust);
 		double base_cost = DBNinja.getBaseCost(size, crust);
 
-		Pizza newPizza = new Pizza(-1, size, crust, o.getOrderID(), "NotComplete", o.getDate(), base_price, base_cost);
+		Pizza newPizza = new Pizza(-1, size, crust, o.getOrderID(), DBNinja.order_notComplete, o.getDate(), base_price, base_cost);
 
 		//add toppings to the pizza
 		int chosen_t = 0;
 		ArrayList<Topping> curInventory = DBNinja.getInventory();
-		//ArrayList<Topping> currPizzaTopping = new ArrayList<>();
+
 		while (chosen_t != -1) {
 			for (Topping t : curInventory) {
 				System.out.println(t.getTopID() + " - " + t.getTopName());
@@ -512,8 +517,8 @@ public class Menu {
 			chosen_t = Integer.parseInt(reader.nextLine());
 
 			if (chosen_t != -1) {
-				if (chosen_t > 0 && chosen_t <= curInventory.size()) {
-					//make copy to avoid aliasing issues
+				if (chosen_t > 0 && chosen_t <= curInventory.size() && curInventory.get(chosen_t).canUseTopping(size)) {
+
 					System.out.println("Would you like to add extra of this topping? (Y/N) : ");
 					String yn = reader.nextLine().toLowerCase(Locale.ROOT);
 					boolean isExtra = yn.equals("y");
@@ -550,6 +555,8 @@ public class Menu {
 			}
 
 		}
+		o.addPizza(newPizza);
+		DBNinja.updateInventory(curInventory);
 		return newPizza;
 	}
 

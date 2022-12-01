@@ -120,13 +120,15 @@ public class Pizza {
 	public void addToppings(Topping t, boolean isExtra) {
 		Toppings.add(t);
 		isToppingDoubled.add(isExtra);
+		t.useTopping(SizeID, isExtra);
 
-		this.Cost += t.getTopCostPerUnit();
+		this.Cost += t.getTopCost(SizeID);
 		this.Price += t.getTopPrice();
+
 		//also add to the prices of the pizza
 		if (isExtra) {
-			this.Cost *= 2;
-			this.Price *= 2;
+			this.Cost += t.getTopCost(SizeID);
+			this.Price += t.getTopPrice();
 		}
 	}
 
@@ -151,6 +153,10 @@ public class Pizza {
 	//we'll need to get this array whenever we're about to add to our pizza-topping bridge table so we know if we need to mark isDoubled as true or not.
 	public ArrayList<Boolean> getIsDoubleArray() {
 		return isToppingDoubled;
+	}
+
+	public Boolean getIsToppingDoubled(int index) {
+		return isToppingDoubled.get(index);
 	}
 
 	@Override

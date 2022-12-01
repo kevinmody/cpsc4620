@@ -64,6 +64,25 @@ public class Topping {
 		return TopCostPerUnit;
 	}
 
+	public double getTopCost(int sizeID) {
+		return TopCostPerUnit * TopUnitSize.get(sizeID);
+	}
+
+	public void useTopping(int sizeID, boolean isDouble) {
+		if (isDouble) {
+			TopCurrentInventory -= (2 * TopUnitSize.get(sizeID));
+			TopStaticCounter += 2;
+		} else {
+			TopCurrentInventory -= (TopUnitSize.get(sizeID));
+			TopStaticCounter += 1;
+		}
+	}
+
+
+	public Boolean canUseTopping(int sizeID) {
+		return ((TopCurrentInventory - (2 * TopUnitSize.get(sizeID))) > 0.0);
+	}
+
 	public void setTopCostPerUnit(double topCostPerUnit) {
 		TopCostPerUnit = topCostPerUnit;
 	}
