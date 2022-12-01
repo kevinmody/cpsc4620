@@ -96,7 +96,7 @@ create table pizza(
     foreign key (PizzaSizeID) references baseCost(BaseCostSizeId),
     foreign key (PizzaOrderID) references customerOrder(CustomerOrderID), 
     
-    PizzaState varchar(255) not null check (PizzaState in ("Complete", "Not-Complete")),
+    PizzaState varchar(255) not null check (PizzaState in ("Complete", "Not-Complete")) default "Not-Complete",
     PizzaTotalCost double(8,2) not null,
     PizzaTotalPrice double(8,2) not null
 );
