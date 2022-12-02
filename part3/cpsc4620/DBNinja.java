@@ -1,3 +1,5 @@
+// Sahil Patel and Kevin Mody
+
 package cpsc4620;
 
 import java.io.IOException;
@@ -295,13 +297,13 @@ public final class DBNinja {
 			p.setPizzaID(pID);
 			p.setOrderID(orderID);
 
-			System.out.println("Is connection Closed (addPizza): " + conn.isClosed());
+			//System.out.println("Is connection Closed (addPizza): " + conn.isClosed());
 
 			if (conn.isClosed()) {
 				connect_to_db();
 			}
 
-			System.out.println("Is connection Closed (addPizza): " + conn.isClosed());
+			//System.out.println("Is connection Closed (addPizza): " + conn.isClosed());
 
 			prepStatement = conn.prepareStatement(pizza_stmt);
 
