@@ -12,3 +12,7 @@
   - Connection closes even if we commented out conn.close.
 - getMaxOrderID and getMaxPizzaID might not be needed when inserting into database.
 - asking customer to dine but then after entering table # its asks for another pizza eventhough customer havent add any pizza.
+
+
+
+Note: On my honor I have neither given nor received aid on this exam nor the projects.
