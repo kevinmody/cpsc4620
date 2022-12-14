@@ -1,4 +1,5 @@
 # 4620 Pizzaria Project
+Roger Van Scoy taught this course.
 
 ## Details
 - We changes almost all files, since we overly complicated database design in part 1 and 2.
